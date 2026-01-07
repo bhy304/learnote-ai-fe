@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# Learnote AI - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AI 기반 학습 보조 플랫폼, Learnote의 프론트엔드 레포지토리입니다.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework:** React 19 (Vite 7)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS v4, shadcn/ui
+- **State Management:** Zustand
+- **Data Fetching:** TanStack Query (React Query) v5, Axios
+- **Form Management:** React Hook Form, Zod
+- **Routing:** React Router DOM v7
+- **Formatting:** Prettier, ESLint
 
-## React Compiler
+## 📂 Project Structure
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+src/
+├── assets/          # 정적 파일 (이미지, 아이콘 등)
+├── components/      # 공통 컴포넌트
+│   └── ui/          # shadcn/ui 로 생성된 기본 UI 컴포넌트
+├── lib/             # 공통 유틸리티 함수 및 라이브러리 설정 (e.g. cn)
+├── pages/           # 페이지 수준 컴포넌트 (추가 예정)
+├── store/           # Zustand 전역 상태 관리 (추가 예정)
+├── hooks/           # 커스텀 훅 (추가 예정)
+├── App.tsx          # 메인 앱 엔트리
+└── main.tsx         # 렌더링 엔트리
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## ⚙️ Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Installation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
+
+### Development
+
+```bash
+npm run dev
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+## 🛠 Features (Planned)
+
+- AI 기술을 활용한 학습 노트 요약 및 분석
+
+## 📄 License
+
+MIT License
