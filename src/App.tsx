@@ -1,129 +1,74 @@
 import { useState } from 'react';
-import { Button } from './components/ui/button';
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from './components/ui/dialog';
-import { Field, FieldLabel } from './components/ui/field';
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroupTextarea,
-} from './components/ui/input-group';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+import { useQuery } from '@tanstack/react-query';
+import AnalysisLoadingView from './components/AnalysisLoadingView';
+import CreateNoteDialog from './components/CreateNoteDialog';
+import AnalysisResultDialog from './components/AnalysisResultDialog';
 import notesAPI from './api/notes.api';
-import LoadingView from './components/LoadingView';
 
 function App() {
-  const [noteContent, setNoteContent] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [reviewId, setReviewId] = useState<number | null>(null);
 
-  const handleCreateNote = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
+  const {
+    data,
+    isError,
+    isLoading: isQueryLoading,
+  } = useQuery({
+    queryKey: ['noteAnalysis', reviewId],
+    queryFn: () => {
+      if (reviewId === null) throw new Error('reviewId is null');
+      return notesAPI.getNote(reviewId);
+    },
+    enabled: !!reviewId,
+    refetchInterval: (query) => (query.state.data?.status === 'ANALYZING' ? 3000 : false),
+  });
 
-    try {
-      setIsLoading(true);
-
-      const result = await notesAPI.createNote({
-        title: '260107 오늘의 학습 노트',
-        rawContent: noteContent,
-      });
-
-      console.log('AI 노트 생성 결과', result);
-      setNoteContent('');
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleCreateSuccess = (id: number) => {
+    setReviewId(id);
   };
 
-  return (
-    <main className="flex min-h-svh flex-col items-center justify-center">
-      {isLoading ? (
-        <LoadingView />
-      ) : (
-        <div className="flex min-h-svh flex-col items-center justify-center">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button className="cursor-pointer">New Note</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <form onSubmit={handleCreateNote}>
-                <DialogHeader>
-                  <DialogTitle>오늘의 학습 노트</DialogTitle>
+  const handleCloseResult = () => {
+    setReviewId(null);
+  };
 
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="mt-1 rounded-lg bg-muted/50 p-2 cursor-pointer"
-                  >
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger>💡 작성 가이드</AccordionTrigger>
-                      <AccordionContent>• 오늘 배운 개념이나 내용</AccordionContent>
-                      <AccordionContent>• 이해한 점 / 어려웠던 점</AccordionContent>
-                      <AccordionContent>• 느낀 점이나 깨달은 점</AccordionContent>
-                      <AccordionContent>• 다음에 학습하고 싶은 것</AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </DialogHeader>
-                <div className="grid gap-4">
-                  <Field>
-                    <FieldLabel htmlFor="note-textarea">학습 노트</FieldLabel>
-                    <InputGroup>
-                      <InputGroupTextarea
-                        id="note-textarea"
-                        placeholder={`예시)
-오늘은 React의 useEffect Hook을 공부했습니다.
-클린업 함수의 필요성을 이해했고,
-dependency array를 비워두면 마운트 시 한 번만 실행된다는 것을 배웠습니다.
-하지만 여러 개의 useEffect를 사용할 때 실행 순서가 헷갈렸습니다.
-내일은 custom hook을 만들어보려고 합니다.`}
-                        className="min-h-[200px] max-h-[500px] overflow-y-auto"
-                        value={noteContent}
-                        onChange={(e) => setNoteContent(e.target.value)}
-                      />
-                      {/* <InputGroupAddon align="block-end">
-                    <InputGroupText>
-                      {noteContent.length}/1000 characters
-                    </InputGroupText>
-                  </InputGroupAddon> */}
-                    </InputGroup>
-                  </Field>
-                </div>
-                <DialogFooter>
-                  <DialogClose asChild>
-                    <Button
-                      variant="outline"
-                      className="cursor-pointer"
-                      onClick={() => setNoteContent('')}
-                    >
-                      취소
-                    </Button>
-                  </DialogClose>
-                  <Button type="submit" className="cursor-pointer">
-                    노트 생성
-                  </Button>
-                </DialogFooter>
-              </form>
-            </DialogContent>
-          </Dialog>
+  const renderContent = () => {
+    if (!reviewId) {
+      return (
+        <div className="flex min-h-svh flex-col items-center justify-center">
+          <CreateNoteDialog onSuccess={handleCreateSuccess} />
         </div>
-      )}
-    </main>
-  );
+      );
+    }
+
+    if (isError) {
+      return (
+        <div className="flex min-h-svh flex-col items-center justify-center">
+          <p className="text-red-500">분석 중 오류가 발생했습니다. 다시 시도해주세요.</p>
+          <button
+            onClick={handleCloseResult}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+          >
+            돌아가기
+          </button>
+        </div>
+      );
+    }
+
+    if (isQueryLoading || (data && data.status === 'ANALYZING')) {
+      return (
+        <main className="flex min-h-svh flex-col items-center justify-center">
+          <AnalysisLoadingView />
+        </main>
+      );
+    }
+
+    if (data && data.status !== 'ANALYZING') {
+      return <AnalysisResultDialog result={data} onClose={handleCloseResult} />;
+    }
+
+    return null;
+  };
+
+  return <>{renderContent()}</>;
 }
 
 export default App;

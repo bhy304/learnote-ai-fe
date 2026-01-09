@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Check } from 'lucide-react';
 import { Spinner } from './ui/spinner';
-export default function LoadingView() {
+
+export default function AnalysisLoadingView() {
   const [step, setStep] = useState(0);
   const steps = [
     { id: 0, label: '학습 내용 분석 중' },
@@ -11,10 +12,10 @@ export default function LoadingView() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setStep((prev) => (prev < 3 ? prev + 1 : prev));
+      setStep((prev) => (prev < steps.length ? prev + 1 : prev));
     }, 2000);
     return () => clearInterval(timer);
-  });
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-svh w-full max-w-sm mx-auto p-6 space-y-8">
