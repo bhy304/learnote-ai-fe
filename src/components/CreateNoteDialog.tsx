@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
@@ -27,8 +26,6 @@ interface Props {
 }
 
 export default function CreateNoteDialog({ onSuccess }: Props) {
-  const [isLoading, setIsLoading] = useState(false);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,8 +35,6 @@ export default function CreateNoteDialog({ onSuccess }: Props) {
 
   const onSubmit = async (data: z.infer<typeof formSchema>): Promise<void> => {
     try {
-      setIsLoading(true);
-
       const result = await notesAPI.createNote({
         title: `${new Date().toLocaleDateString('ko-KR')} 오늘의 학습 노트`,
         rawContent: data.rowContent,
@@ -49,8 +44,6 @@ export default function CreateNoteDialog({ onSuccess }: Props) {
       form.reset();
     } catch (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
