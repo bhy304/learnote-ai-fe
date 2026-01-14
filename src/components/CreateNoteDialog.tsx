@@ -14,7 +14,7 @@ import { Button } from './ui/button';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
 import { Field, FieldError, FieldGroup, FieldLabel } from './ui/field';
 import { InputGroup, InputGroupTextarea } from './ui/input-group';
-import { NOTE_PLACEHOLDER } from '@/const';
+import { NOTE_PLACEHOLDER } from '@/constants';
 import notesAPI from '@/api/notes.api';
 
 const formSchema = z.object({
