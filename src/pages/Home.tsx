@@ -18,7 +18,7 @@ export default function Home() {
     queryKey: ['dashboard', userId],
     queryFn: () => dashboardAPI.getDashboard(),
   });
-  const { data: notes, isLoading } = useQuery({
+  const { data: notes } = useQuery({
     queryKey: ['notes', userId],
     queryFn: () => dashboardAPI.getNotes(),
   });
@@ -67,7 +67,7 @@ export default function Home() {
                 <p>데이터를 불러오는 중...</p>
               </div>
             ) : (
-              <NotesTable notes={notes || []} onView={setReviewId} />
+              <NotesTable notes={notes || []} />
             )}
           </main>
         </>

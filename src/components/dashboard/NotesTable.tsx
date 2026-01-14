@@ -11,16 +11,16 @@ import type { DashboardNote } from '@/types/dashboard.type';
 
 interface RecentNotesTableProps {
   notes: DashboardNote[];
-  onView: (id: number) => void;
+  // onView: (id: number) => void;
 }
 
-const statusMap = {
-  ANALYZING: { label: '분석 중', variant: 'outline' as const },
-  COMPLETED: { label: '완료', variant: 'default' as const },
-  FAILED: { label: '실패', variant: 'destructive' as const },
-};
+// const statusMap = {
+//   ANALYZING: { label: '분석 중', variant: 'outline' as const },
+//   COMPLETED: { label: '완료', variant: 'default' as const },
+//   FAILED: { label: '실패', variant: 'destructive' as const },
+// };
 
-export default function NotesTable({ notes, onView }: RecentNotesTableProps) {
+export default function NotesTable({ notes }: RecentNotesTableProps) {
   return (
     <div className="rounded-md border bg-white">
       <Table>
