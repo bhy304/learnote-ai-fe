@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { MailIcon, LockIcon, UserIcon } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 export default function Signup() {
   return (
@@ -15,9 +15,9 @@ export default function Signup() {
         <CardContent>
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="name">이름</FieldLabel>
+              <FieldLabel htmlFor="username">이름</FieldLabel>
               <InputGroup>
-                <InputGroupInput id="name" type="name" placeholder="이름을 입력해 주세요." />
+                <InputGroupInput id="username" type="text" placeholder="이름을 입력해 주세요." />
                 <InputGroupAddon>
                   <UserIcon className="text-muted-foreground" />
                 </InputGroupAddon>
