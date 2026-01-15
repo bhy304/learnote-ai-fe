@@ -1,3 +1,8 @@
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
 import authAPI from '@/api/auth.api';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,11 +15,7 @@ import {
 } from '@/components/ui/input-group';
 import { loginSchema, type LoginSchema } from '@/schema/auth.schema';
 import { useAuthStore } from '@/store/authStore';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { EyeOffIcon, EyeIcon, MailIcon, LockIcon } from 'lucide-react';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -28,20 +29,30 @@ export default function Login() {
   const setAuth = useAuthStore((state) => state.setAuth);
   const [showPassword, setShowPassword] = useState(false);
 
-  // @TODO: 이메일 혹은 비밀번호 틀렸을 때 처리
   const onSubmit = async ({ email, password }: LoginSchema): Promise<void> => {
     try {
-      const result = await authAPI.login({
+      const { accessToken } = await authAPI.login({
         email,
         password,
       });
 
-      console.log(result);
-      setAuth(result.accessToken);
+      setAuth(accessToken);
       navigate('/', { replace: true });
     } catch (error) {
-      // @TODO: 이메일 혹은 비밀번호 틀렸을 때 처리
-      console.error(error);
+      if (axios.isAxiosError(error) && error.response) {
+        const { status, data } = error.response;
+
+        if (status === 401 && data.error === 'Unauthorized') {
+          form.setError(
+            'root',
+            {
+              type: 'manual',
+              message: '이메일 또는 비밀번호가 올바르지 않습니다.',
+            },
+            { shouldFocus: true },
+          );
+        }
+      }
     }
   };
 
@@ -87,6 +98,7 @@ export default function Login() {
                   </InputGroupAddon>
                   <InputGroupAddon align="inline-end">
                     <InputGroupButton
+                      type="button"
                       size="icon-xs"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? 'Hide password' : 'Show password'}

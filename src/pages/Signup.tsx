@@ -1,14 +1,13 @@
-import * as z from 'zod';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { MailIcon, LockIcon, UserIcon } from 'lucide-react';
-import { useForm } from 'react-hook-form';
 import authAPI from '@/api/auth.api';
-import axios from 'axios';
 import { signupSchema, type SignupSchema } from '@/schema/auth.schema';
 
 export default function Signup() {
@@ -37,13 +36,12 @@ export default function Signup() {
       if (axios.isAxiosError(error) && error.response) {
         const { status, data } = error.response;
 
-        // @TODO: 400, 409 에러 처리
-        if (status === 400 && data.message.includes('users_email_key')) {
+        if (status === 409 && data.error === 'Conflict') {
           form.setError(
             'email',
             {
               type: 'manual',
-              message: '이미 등록된 이메일입니다.',
+              message: '이미 사용 중인 이메일입니다.',
             },
             { shouldFocus: true },
           );
@@ -136,7 +134,9 @@ export default function Signup() {
             </FieldGroup>
           </CardContent>
           <CardFooter className="flex flex-col gap-4 mt-6">
-            <Button className="w-full cursor-pointer">회원가입</Button>
+            <Button type="submit" className="w-full cursor-pointer">
+              회원가입
+            </Button>
             <p className="flex items-center justify-between text-sm">
               이미 계정이 있으신가요?
               <Link to="/login" className="h-auto p-2 hover:underline">
