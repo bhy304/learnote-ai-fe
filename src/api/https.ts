@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/store/authStore';
 import axios, { AxiosError, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios';
 
 const DEFAULT_TIMEOUT = 10000;
@@ -8,10 +9,17 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => config,
+  (config: InternalAxiosRequestConfig) => {
+    const accessToken = useAuthStore.getState().accessToken;
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
   (error) => Promise.reject(error),
 );
 axiosInstance.interceptors.response.use(
