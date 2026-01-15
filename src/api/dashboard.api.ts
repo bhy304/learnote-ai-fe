@@ -1,24 +1,34 @@
-import type { DashboardResponse, DashboardNote } from '@/types/dashboard.type';
-// import https from './https';
-
-import notesMockData from '@/mock/notes.json';
-import dashboardMockData from '@/mock/dashboard.json';
+import https from './https';
+import type {
+  DashboardSummaryDto,
+  TodoResponseDto,
+  CreateTodoDto,
+  UpdateTodoDto,
+} from '@/models/generated';
 
 const dashboardAPI = {
-  // async getDashboard(userId: string) {
-  //   const response = await https.get<DashboardResponse>(`/dashboard/${userId}`);
-  //   return response;
-  // },
-
-  async getDashboard(): Promise<DashboardResponse> {
-    // 실제 서버 호출 대신 로컬 JSON 데이터를 반환합니다.
-    // Promise.resolve를 사용하여 비동기 통신을 흉내냅니다.
-    return Promise.resolve(dashboardMockData as unknown as DashboardResponse);
+  async getDashboard() {
+    const response = await https.get<DashboardSummaryDto>(`/dashboard`);
+    return response;
   },
-  async getNotes(): Promise<DashboardNote[]> {
-    // 실제 서버 호출 대신 로컬 JSON 데이터를 반환합니다.
-    // Promise.resolve를 사용하여 비동기 통신을 흉내냅니다.
-    return Promise.resolve(notesMockData as unknown as DashboardNote[]);
+  async getDashboardTodos() {
+    const response = await https.get<TodoResponseDto[]>('/dashboard/todos');
+    return response;
+  },
+  async createDashboardTodo(data: CreateTodoDto) {
+    const response = await https.post<CreateTodoDto, TodoResponseDto>('/dashboard/todos', data);
+    return response;
+  },
+  async updateDashboardTodo(id: string, data: UpdateTodoDto) {
+    const response = await https.patch<UpdateTodoDto, TodoResponseDto>(
+      `/dashboard/todos/${id}`,
+      data,
+    );
+    return response;
+  },
+  async deleteDashboardTodo(id: string) {
+    const response = await https.delete(`/dashboard/todos/${id}`);
+    return response;
   },
 };
 

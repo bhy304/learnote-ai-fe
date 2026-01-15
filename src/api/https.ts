@@ -40,6 +40,10 @@ const https = {
     const response = await axiosInstance.put<R>(url, data, config);
     return response.data;
   },
+  async patch<T, R>(url: string, data?: T, config?: AxiosRequestConfig): Promise<R> {
+    const response = await axiosInstance.patch<R>(url, data, config);
+    return response.data;
+  },
   async delete<R>(url: string, config?: AxiosRequestConfig): Promise<R> {
     const response = await axiosInstance.delete<R>(url, config);
     return response.data;
