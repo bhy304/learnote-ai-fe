@@ -8,6 +8,8 @@ import type {
   SimpleMessageResponseDto,
   NotesControllerListNotesParams,
   NoteListResponseDto,
+  SaveLearningTodosDto,
+  TodoResponseDto,
 } from '@/models/generated';
 
 const notesAPI = {
@@ -29,6 +31,13 @@ const notesAPI = {
   },
   async getNotes(params: NotesControllerListNotesParams) {
     const response = await https.get<NoteListResponseDto>('/notes', { params });
+    return response;
+  },
+  async saveLearningTodos(id: string, data: SaveLearningTodosDto) {
+    const response = await https.post<SaveLearningTodosDto, TodoResponseDto>(
+      `/notes/${id}/todos`,
+      data,
+    );
     return response;
   },
 };
