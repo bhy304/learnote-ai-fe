@@ -26,31 +26,32 @@ export default function Login() {
       password: '',
     },
   });
+  const setUser = useAuthStore((state) => state.setUser);
   const setAuth = useAuthStore((state) => state.setAuth);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async ({ email, password }: LoginSchema): Promise<void> => {
     try {
-      const { accessToken } = await authAPI.login({
+      const { accessToken, refreshToken, user } = await authAPI.login({
         email,
         password,
       });
 
-      setAuth(accessToken);
+      setUser(user);
+      setAuth(accessToken, refreshToken);
+
       navigate('/', { replace: true });
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        const { status, data } = error.response;
+        const { status } = error.response;
 
-        if (status === 401 && data.error === 'Unauthorized') {
-          form.setError(
-            'root',
-            {
-              type: 'manual',
-              message: '이메일 또는 비밀번호가 올바르지 않습니다.',
-            },
-            { shouldFocus: true },
-          );
+        if (status === 401) {
+          form.setError('root', {
+            type: 'manual',
+            message: '이메일 또는 비밀번호가 올바르지 않습니다.',
+          });
+          form.setFocus('email');
         }
       }
     }
@@ -63,7 +64,7 @@ export default function Login() {
           <CardHeader>
             <CardTitle className="text-center text-2xl">로그인</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">이메일</FieldLabel>
@@ -72,7 +73,7 @@ export default function Login() {
                     id="email"
                     type="email"
                     placeholder="이메일을 입력해 주세요."
-                    aria-invalid={!!form.formState.errors.email}
+                    aria-invalid={!!form.formState.errors.email || !!form.formState.errors.root}
                     {...form.register('email')}
                   />
                   <InputGroupAddon>
@@ -90,7 +91,7 @@ export default function Login() {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="비밀번호를 입력해 주세요."
-                    aria-invalid={!!form.formState.errors.password}
+                    aria-invalid={!!form.formState.errors.password || !!form.formState.errors.root}
                     {...form.register('password')}
                   />
                   <InputGroupAddon>
@@ -110,6 +111,7 @@ export default function Login() {
                 {form.formState.errors.password && (
                   <FieldError errors={[form.formState.errors.password]} />
                 )}
+                {form.formState.errors.root && <FieldError errors={[form.formState.errors.root]} />}
               </Field>
             </FieldGroup>
           </CardContent>

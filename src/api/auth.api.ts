@@ -1,14 +1,25 @@
-import type { Auth, SignupResponse, LoginResponse } from '@/models/auth.model';
 import https from './https';
+import type {
+  SignupDto,
+  UserResponseDto,
+  LoginDto,
+  LoginResponseDto,
+  AuthControllerRefreshBody,
+  RefreshResponseDto,
+} from '@/models/generated';
 
 const authAPI = {
-  async signup(data: Auth) {
-    const response = await https.post<Auth, SignupResponse>('/auth/signup', data);
+  async signup(data: SignupDto) {
+    const response = await https.post<SignupDto, UserResponseDto>('/auth/signup', data);
     return response;
   },
-  async login(data: Pick<Auth, 'email' | 'password'>) {
-    const response = await https.post<Pick<Auth, 'email' | 'password'>, LoginResponse>(
-      '/auth/login',
+  async login(data: LoginDto) {
+    const response = await https.post<LoginDto, LoginResponseDto>('/auth/login', data);
+    return response;
+  },
+  async refresh(data: AuthControllerRefreshBody) {
+    const response = await https.post<AuthControllerRefreshBody, RefreshResponseDto>(
+      '/auth/refresh',
       data,
     );
     return response;
