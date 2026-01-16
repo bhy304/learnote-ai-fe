@@ -6,7 +6,7 @@ import DashboardStats from '@/components/dashboard/DashboardStats';
 import { DataTable } from '@/components/dashboard/data-table';
 import { columns } from '@/components/dashboard/columns';
 import { useDashboard } from '@/hooks/useDashboard';
-import { useNote, useNotes } from '@/hooks/useNote';
+import { useNotes } from '@/hooks/useNote';
 import { useDashboardTodos } from '@/hooks/useDashboardTodos';
 import { KanbanBoard } from '@/components/kanban/KanbanBoard';
 import { Button } from '@/components/ui/button';
@@ -25,8 +25,6 @@ export default function Dashboard() {
     page: String(page),
     pageSize: String(PAGE_SIZE),
   });
-
-  console.log(notes);
 
   const renderContent = () => {
     if (!noteId) {

@@ -6,6 +6,8 @@ import type {
   UpdateNoteDto,
   NoteEntityDto,
   SimpleMessageResponseDto,
+  NotesControllerListNotesParams,
+  NoteListResponseDto,
 } from '@/models/generated';
 
 const notesAPI = {
@@ -23,6 +25,10 @@ const notesAPI = {
   },
   async deleteNote(id: string) {
     const response = await https.delete<SimpleMessageResponseDto>(`/notes/${id}`);
+    return response;
+  },
+  async getNotes(params: NotesControllerListNotesParams) {
+    const response = await https.get<NoteListResponseDto>('/notes', { params });
     return response;
   },
 };
