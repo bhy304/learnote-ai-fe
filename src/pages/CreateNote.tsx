@@ -8,9 +8,13 @@ import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field
 import { InputGroup, InputGroupTextarea } from '@/components/ui/input-group';
 import { Button } from '@/components/ui/button';
 import { Lightbulb } from 'lucide-react';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function CreateNote() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof noteSchema>>({
     resolver: zodResolver(noteSchema),
@@ -20,21 +24,27 @@ export default function CreateNote() {
   });
 
   const onSubmit = async (data: z.infer<typeof noteSchema>): Promise<void> => {
+    setIsSubmitting(true);
     try {
       const result = await notesAPI.createNote({
         rawContent: data.rawContent,
       });
 
       form.reset();
-      // 노트 생성 -> 로딩 화면 -> 분석 결과 화면
+
+      // 관련 쿼리 무효화 (대시보드 통계, 히트맵, 노트 목록 갱신)
+      queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+
       navigate(`/notes/${result.noteId}`);
     } catch (error) {
       console.error(error);
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <main className="container mx-auto py-10 px-4 max-w-[1200px]">
+    <main className="container mx-auto py-10 px-4 max-w-[1000px]">
       <div className="mb-10">
         <h1 className="text-4xl font-bold tracking-tight mb-2">오늘의 학습 노트</h1>
         <p className="text-muted-foreground text-lg">오늘의 학습 노트를 작성해보세요.</p>
@@ -75,7 +85,7 @@ export default function CreateNote() {
                     {...field}
                     id="form-note"
                     placeholder={`예시)\n오늘은 React의 useEffect Hook을 공부했습니다.\n클린업 함수의 필요성을 이해했고,\ndependency array를 비워두면 마운트 시 한 번만 실행된다는 것을 배웠습니다.\n하지만 여러 개의 useEffect를 사용할 때 실행 순서가 헷갈렸습니다.\n내일은 custom hook을 만들어보려고 합니다.`}
-                    className="min-h-100 max-h-200 resize-none overflow-y-auto text-lg leading-relaxed p-6 placeholder:text-base placeholder:text-muted-foreground/40"
+                    className="min-h-100 max-h-130 resize-none overflow-y-auto text-lg leading-relaxed p-6 placeholder:text-base placeholder:text-muted-foreground/40"
                     aria-invalid={fieldState.invalid}
                   />
                 </InputGroup>
@@ -89,11 +99,12 @@ export default function CreateNote() {
             type="button"
             variant="outline"
             className="cursor-pointer"
+            disabled={isSubmitting}
             onClick={() => navigate('/')}
           >
             취소
           </Button>
-          <Button type="submit" className="cursor-pointer">
+          <Button type="submit" className="cursor-pointer" disabled={isSubmitting}>
             노트 생성
           </Button>
         </div>

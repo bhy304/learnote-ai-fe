@@ -12,8 +12,10 @@ import { signupSchema, type SignupSchema } from '@/schema/auth.schema';
 import { useAuthStore } from '@/store/authStore';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Signup() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const form = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
@@ -40,6 +42,18 @@ export default function Signup() {
           email,
           password,
         });
+
+        queryClient.clear();
+
+        // 대시보드 데이터를 '비어있음' 상태로 미리 채워넣기 (스켈레톤 방지)
+        queryClient.setQueryData(['dashboard'], {
+          userId: user.id,
+          totalNotes: 0,
+          currentStreakDays: 0,
+          thisMonthNotes: 0,
+          activity: [],
+        });
+
         setAuth(accessToken, refreshToken);
         setUser(user);
         navigate('/', { replace: true });

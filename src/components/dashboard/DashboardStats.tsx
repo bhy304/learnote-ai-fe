@@ -3,27 +3,27 @@ import { NotebookPen, CalendarFold, Flame } from 'lucide-react';
 import type { DashboardSummaryDto } from '@/models/generated';
 
 interface DashboardStatsProps {
-  data: DashboardSummaryDto | undefined;
+  dashboardData: DashboardSummaryDto | undefined;
 }
 
-export default function DashboardStats({ data }: DashboardStatsProps) {
+export default function DashboardStats({ dashboardData }: DashboardStatsProps) {
   const stats = [
     {
       title: 'Total Notes',
       Icon: NotebookPen,
-      value: data?.totalNotes,
+      value: dashboardData?.totalNotes,
       unit: '개',
     },
     {
       title: 'Learning Streak',
       Icon: Flame,
-      value: data?.currentStreakDays,
+      value: dashboardData?.currentStreakDays,
       unit: '일',
     },
     {
-      title: '이번달',
+      title: 'This Month',
       Icon: CalendarFold,
-      value: data?.thisMonthNotes,
+      value: dashboardData?.thisMonthNotes,
       unit: '개',
     },
   ];

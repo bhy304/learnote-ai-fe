@@ -16,8 +16,10 @@ import {
 import { loginSchema, type LoginSchema } from '@/schema/auth.schema';
 import { useAuthStore } from '@/store/authStore';
 import { EyeOffIcon, EyeIcon, MailIcon, LockIcon } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Login() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -38,6 +40,7 @@ export default function Login() {
         password,
       });
 
+      queryClient.clear(); // 로그인 시 이전 유저나 이전 세션의 캐시 데이터를 완전히 삭제
       setUser(user);
       setAuth(accessToken, refreshToken);
 
