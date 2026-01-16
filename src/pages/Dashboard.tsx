@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import Heatmap from '@/components/dashboard/Heatmap';
 import Header from '@/components/common/Header';
 import DashboardStats from '@/components/dashboard/DashboardStats';
@@ -10,10 +10,13 @@ import { useNotes } from '@/hooks/useNote';
 import { useDashboardTodos } from '@/hooks/useDashboardTodos';
 import { KanbanBoard } from '@/components/kanban/KanbanBoard';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import EmptyDashboard from '@/components/dashboard/EmptyDashboard';
+import { useAuthStore } from '@/store/authStore';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+
+  const user = useAuthStore((state) => state.user);
 
   const [noteId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -26,6 +29,10 @@ export default function Dashboard() {
     pageSize: String(PAGE_SIZE),
   });
 
+  const isFirstTimeUser = !isDashboardLoading && dashboardData?.totalNotes === 0;
+
+  console.log(user);
+
   const renderContent = () => {
     if (!noteId) {
       return (
@@ -36,62 +43,62 @@ export default function Dashboard() {
               <div className="flex h-12 items-center justify-center">
                 <p className="text-muted-foreground">통계 데이터를 불러오는 중...</p>
               </div>
+            ) : isFirstTimeUser ? (
+              <EmptyDashboard userName={user?.name || ''} />
             ) : (
-              <div>
+              <>
                 <DashboardStats data={dashboardData} />
                 <Heatmap dashboardData={dashboardData} />
-              </div>
-            )}
-
-            <section className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold">TODO</h2>
-                  {/* <p className="text-muted-foreground text-sm">
+                <section className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-2xl font-bold">TODO</h2>
+                      {/* <p className="text-muted-foreground text-sm">
                     추출된 To-Do들을 드래그 앤 드롭으로 관리하세요.
                   </p> */}
-                </div>
-              </div>
+                    </div>
+                  </div>
 
-              {isTodosLoading ? (
-                <div className="flex h-64 items-center justify-center bg-muted/20 rounded-xl border border-dashed">
-                  <p className="text-muted-foreground">할 일 목록을 불러오는 중...</p>
-                </div>
-              ) : (
-                <KanbanBoard initialTodos={todoData || []} />
-              )}
-            </section>
-
-            <section className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold">학습 노트 목록</h2>
-                  {/* <p className="text-muted-foreground text-sm">
+                  {isTodosLoading ? (
+                    <div className="flex h-64 items-center justify-center bg-muted/20 rounded-xl border border-dashed">
+                      <p className="text-muted-foreground">할 일 목록을 불러오는 중...</p>
+                    </div>
+                  ) : (
+                    <KanbanBoard initialTodos={todoData || []} />
+                  )}
+                </section>
+                <section className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h2 className="text-2xl font-bold">학습 노트 목록</h2>
+                      {/* <p className="text-muted-foreground text-sm">
                     최근 작성하고 분석한 학습 노트 목록입니다.
                   </p> */}
-                </div>
-                <Button className="cursor-pointer" onClick={() => navigate('/notes/new')}>
-                  노트 생성
-                </Button>
-                {/* <CreateNoteDialog onSuccess={handleCreateSuccess} /> */}
-              </div>
+                    </div>
+                    <Button className="cursor-pointer" onClick={() => navigate('/notes/new')}>
+                      노트 생성
+                    </Button>
+                    {/* <CreateNoteDialog onSuccess={handleCreateSuccess} /> */}
+                  </div>
 
-              {isNotesLoading ? (
-                <div className="flex h-64 items-center justify-center bg-muted/20 rounded-xl border border-dashed">
-                  <p className="text-muted-foreground">노트 목록을 불러오는 중...</p>
-                </div>
-              ) : (
-                <div className="container mx-auto">
-                  <DataTable
-                    columns={columns}
-                    data={notes?.items || []}
-                    pageCount={notes ? Math.ceil(notes.total / PAGE_SIZE) : 0}
-                    pageIndex={page - 1}
-                    onPageChange={setPage}
-                  />
-                </div>
-              )}
-            </section>
+                  {isNotesLoading ? (
+                    <div className="flex h-64 items-center justify-center bg-muted/20 rounded-xl border border-dashed">
+                      <p className="text-muted-foreground">노트 목록을 불러오는 중...</p>
+                    </div>
+                  ) : (
+                    <div className="container mx-auto">
+                      <DataTable
+                        columns={columns}
+                        data={notes?.items || []}
+                        pageCount={notes ? Math.ceil(notes.total / PAGE_SIZE) : 0}
+                        pageIndex={page - 1}
+                        onPageChange={setPage}
+                      />
+                    </div>
+                  )}
+                </section>
+              </>
+            )}
           </main>
         </>
       );

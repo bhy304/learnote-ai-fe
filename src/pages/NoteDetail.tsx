@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 export default function NoteDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: note, isLoading, error } = useNote(id || null);
+  const { data: note } = useNote(id || null);
 
   return (
     <main className="container mx-auto py-10 px-4 max-w-[1200px]">

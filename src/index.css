@@ -137,6 +137,8 @@
   .react-calendar-heatmap rect {
     rx: 2;
     ry: 2;
+    width: 8px;
+    height: 8px;
   }
   .react-calendar-heatmap .react-calendar-heatmap-weekday-label {
     @apply translate-x-[-5px];
