@@ -404,17 +404,9 @@
         },
         "responses": {
           "201": {
-            "description": "User successfully signed up.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponseDto"
-                }
-              }
-            }
+            "description": ""
           }
         },
-        "summary": "Register a new user",
         "tags": ["auth"]
       }
     },
@@ -422,29 +414,35 @@
       "post": {
         "operationId": "AuthController_login",
         "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": ["auth"]
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User successfully logged in.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResponseDto"
+                "example": {
+                  "refreshToken": "string"
                 }
               }
             }
           }
         },
-        "summary": "Log in with email and password",
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
         "tags": ["auth"]
       }
     },
@@ -454,22 +452,9 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "JWT validation successful.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MeResponseDto"
-                }
-              }
-            }
+            "description": ""
           }
         },
-        "security": [
-          {
-            "access-token": []
-          }
-        ],
-        "summary": "Get current user information (JWT test)",
         "tags": ["auth"]
       }
     }
@@ -482,20 +467,12 @@
   },
   "tags": [
     {
-      "name": "auth",
-      "description": "Authentication and user registration"
-    },
-    {
       "name": "dashboard",
       "description": "Endpoints related to user dashboard"
     },
     {
       "name": "notes",
       "description": "Endpoints related to user notes"
-    },
-    {
-      "name": "app",
-      "description": "Application level endpoints"
     }
   ],
   "servers": [],
@@ -614,74 +591,51 @@
           },
           "summary": {
             "type": "object",
-            "properties": {
-              "keywords": {
-                "type": "array",
-                "items": { "type": "string" }
-              },
-              "oneLineSummary": {
-                "type": "string"
-              }
+            "example": {
+              "key concepts": ["NestJS", "Swagger"]
             },
             "description": "Summary of the note"
           },
           "factChecks": {
+            "example": [
+              {
+                "id": 1,
+                "fact": "NestJS is a Node.js framework.",
+                "verified": true
+              }
+            ],
+            "description": "List of fact checks",
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "id": { "type": "number" },
-                "fact": { "type": "string" },
-                "verified": { "type": "boolean" },
-                "comment": { "type": "string" },
-                "verdict": { "type": "string" },
-                "originalText": { "type": "string" }
-              }
-            },
-            "description": "List of fact checks"
+              "type": "string"
+            }
           },
           "feedback": {
             "type": "object",
-            "properties": {
-              "type": { "type": "string" },
-              "message": { "type": "string" },
-              "longTermGoal": { "type": "string" },
-              "shortTermGoal": { "type": "string" },
-              "suggestions": { "type": "string" }
+            "example": {
+              "suggestions": "Add more examples."
             },
             "description": "Feedback on the note"
           },
           "skillUpdateProposal": {
             "type": "object",
-            "properties": {
-              "stack": { "type": "string" },
-              "category": { "type": "string" },
-              "newSkills": {
-                "type": "array",
-                "items": { "type": "string" }
-              },
-              "skills": {
-                "type": "array",
-                "items": { "type": "string" }
-              }
+            "example": {
+              "skills": ["Typescript", "Backend"]
             },
             "description": "Proposed skill updates"
           },
           "suggestedTodos": {
+            "example": [
+              {
+                "content": "Practice Decorators",
+                "dueDate": "2026-01-15"
+              }
+            ],
+            "description": "Suggested todo items",
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "reason": { "type": "string" },
-                "content": { "type": "string" },
-                "dueDate": { "type": "string" },
-                "deadlineType": {
-                  "type": "string",
-                  "enum": ["SHORT_TERM", "LONG_TERM"]
-                }
-              }
-            },
-            "description": "Suggested todo items"
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -833,7 +787,7 @@
             "example": "Raw content..."
           },
           "refinedContent": {
-            "type": "object",
+            "type": "string",
             "example": "Refined content...",
             "nullable": true
           },
@@ -983,65 +937,6 @@
           }
         },
         "required": ["email", "password", "name"]
-      },
-      "UserResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 1
-          },
-          "email": {
-            "type": "string",
-            "example": "test@test.com"
-          },
-          "name": {
-            "type": "string",
-            "example": "tester"
-          }
-        },
-        "required": ["id", "email", "name"]
-      },
-      "LoginDto": {
-        "type": "object",
-        "properties": {
-          "email": {
-            "type": "string",
-            "example": "test@test.com"
-          },
-          "password": {
-            "type": "string",
-            "example": "1234"
-          }
-        },
-        "required": ["email", "password"]
-      },
-      "LoginResponseDto": {
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string",
-            "example": "jwt-token-example"
-          }
-        },
-        "required": ["accessToken"]
-      },
-      "MeResponseDto": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "JWT works"
-          },
-          "user": {
-            "type": "object",
-            "example": {
-              "userId": 1,
-              "email": "test@test.com"
-            }
-          }
-        },
-        "required": ["message", "user"]
       }
     }
   }

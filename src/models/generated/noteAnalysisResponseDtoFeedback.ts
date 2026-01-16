@@ -9,10 +9,4 @@
 /**
  * Feedback on the note
  */
-export type NoteAnalysisResponseDtoFeedback = {
-  type?: string;
-  message?: string;
-  longTermGoal?: string;
-  shortTermGoal?: string;
-  suggestions?: string;
-};
+export type NoteAnalysisResponseDtoFeedback = { [key: string]: unknown };

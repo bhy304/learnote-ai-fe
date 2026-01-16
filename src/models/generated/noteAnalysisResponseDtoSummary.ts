@@ -9,7 +9,4 @@
 /**
  * Summary of the note
  */
-export type NoteAnalysisResponseDtoSummary = {
-  keywords?: string[];
-  oneLineSummary?: string;
-};
+export type NoteAnalysisResponseDtoSummary = { [key: string]: unknown };

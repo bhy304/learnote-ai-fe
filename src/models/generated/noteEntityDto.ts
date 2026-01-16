@@ -5,7 +5,6 @@
  * API documentation for LearnoteAI
  * OpenAPI spec version: 1.0
  */
-import type { NoteEntityDtoRefinedContent } from './noteEntityDtoRefinedContent';
 
 export interface NoteEntityDto {
   id: number;
@@ -13,6 +12,6 @@ export interface NoteEntityDto {
   title: string;
   rawContent: string;
   /** @nullable */
-  refinedContent: NoteEntityDtoRefinedContent;
+  refinedContent: string | null;
   createdAt: string;
 }

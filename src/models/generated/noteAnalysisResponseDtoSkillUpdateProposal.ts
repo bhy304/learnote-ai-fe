@@ -9,9 +9,4 @@
 /**
  * Proposed skill updates
  */
-export type NoteAnalysisResponseDtoSkillUpdateProposal = {
-  stack?: string;
-  category?: string;
-  newSkills?: string[];
-  skills?: string[];
-};
+export type NoteAnalysisResponseDtoSkillUpdateProposal = { [key: string]: unknown };
