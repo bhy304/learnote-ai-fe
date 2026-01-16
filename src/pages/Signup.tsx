@@ -10,6 +10,8 @@ import { MailIcon, LockIcon, UserIcon } from 'lucide-react';
 import authAPI from '@/api/auth.api';
 import { signupSchema, type SignupSchema } from '@/schema/auth.schema';
 import { useAuthStore } from '@/store/authStore';
+import { Toaster } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -43,7 +45,7 @@ export default function Signup() {
         navigate('/', { replace: true });
       } catch (loginError) {
         console.error(loginError);
-        alert('회원가입이 완료되었습니다. 로그인 페이지에서 로그인을 진행해 주세요.');
+        toast.success('회원가입이 완료되었습니다. 로그인 페이지에서 로그인을 진행해 주세요.');
         navigate('/login', { replace: true });
       }
     } catch (error) {
@@ -61,7 +63,7 @@ export default function Signup() {
           );
         } else {
           console.error(error);
-          form.setError('root', { type: 'manual', message: '회원가입 중 오류가 발생했습니다.' });
+          toast.error('회원가입 중 오류가 발생했습니다.');
         }
       }
     }
@@ -161,6 +163,7 @@ export default function Signup() {
           </CardFooter>
         </form>
       </Card>
+      <Toaster />
     </div>
   );
 }
