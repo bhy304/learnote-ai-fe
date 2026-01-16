@@ -13,6 +13,7 @@ import type {
 
 import type {
   AuthControllerRefreshBody,
+  LoginDto,
   LoginResponseDto,
   MeResponseDto,
   RefreshResponseDto,
@@ -38,11 +39,11 @@ export const authControllerSignup = <TData = AxiosResponse<UserResponseDto>>(
  * @summary Login with local strategy
  */
 export const authControllerLogin = <TData = AxiosResponse<LoginResponseDto>>(
-    authControllerLoginBody: unknown, options?: AxiosRequestConfig
+    loginDto: LoginDto, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
       `/auth/login`,
-      authControllerLoginBody,options
+      loginDto,options
     );
   }
 /**

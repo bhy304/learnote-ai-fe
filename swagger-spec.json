@@ -452,10 +452,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "example": {
-                  "email": "test@test.com",
-                  "password": "password123"
-                }
+                "$ref": "#/components/schemas/LoginDto"
               }
             }
           }
@@ -1030,6 +1027,20 @@
           }
         },
         "required": ["email", "password", "name"]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test@test.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "password123"
+          }
+        },
+        "required": ["email", "password"]
       },
       "UserResponseDto": {
         "type": "object",

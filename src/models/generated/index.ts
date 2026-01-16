@@ -14,6 +14,7 @@ export * from './createTodoDtoDeadlineType';
 export * from './dashboardSummaryDto';
 export * from './learningTodoItemDto';
 export * from './learningTodoItemDtoDeadlineType';
+export * from './loginDto';
 export * from './loginResponseDto';
 export * from './meResponseDto';
 export * from './meResponseDtoUser';

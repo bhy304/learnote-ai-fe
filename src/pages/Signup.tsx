@@ -9,6 +9,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { MailIcon, LockIcon, UserIcon } from 'lucide-react';
 import authAPI from '@/api/auth.api';
 import { signupSchema, type SignupSchema } from '@/schema/auth.schema';
+import { useAuthStore } from '@/store/authStore';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ export default function Signup() {
       passwordConfirm: '',
     },
   });
+  const setUser = useAuthStore((state) => state.setUser);
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   const onSubmit = async ({ name, email, password }: SignupSchema): Promise<void> => {
     try {
@@ -29,14 +32,25 @@ export default function Signup() {
         email,
         password,
       });
-      // @TODO: 가입 성공시 자동 로그인 후 메인페이지로 이동
 
-      navigate('/login');
+      try {
+        const { accessToken, refreshToken, user } = await authAPI.login({
+          email,
+          password,
+        });
+        setAuth(accessToken, refreshToken);
+        setUser(user);
+        navigate('/', { replace: true });
+      } catch (loginError) {
+        console.error(loginError);
+        alert('회원가입이 완료되었습니다. 로그인 페이지에서 로그인을 진행해 주세요.');
+        navigate('/login', { replace: true });
+      }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        const { status, data } = error.response;
+        const { status } = error.response;
 
-        if (status === 409 && data.error === 'Conflict') {
+        if (status === 409) {
           form.setError(
             'email',
             {
@@ -47,6 +61,7 @@ export default function Signup() {
           );
         } else {
           console.error(error);
+          form.setError('root', { type: 'manual', message: '회원가입 중 오류가 발생했습니다.' });
         }
       }
     }
