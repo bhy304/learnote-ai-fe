@@ -6,13 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 
-export type NotesControllerListNotesParams = {
-/**
- * Page number
- */
-page?: string;
-/**
- * Number of items per page
- */
-pageSize?: string;
+export type AuthControllerRefreshBody = {
+  refreshToken: string;
 };

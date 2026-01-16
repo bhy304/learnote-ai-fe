@@ -7,6 +7,8 @@
  */
 
 export interface CreateNoteDto {
+  /** The title of the note. If omitted, AI will generate one. */
+  title?: string;
   /** The main content of the note */
   rawContent: string;
 }

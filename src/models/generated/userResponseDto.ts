@@ -6,13 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 
-export type NotesControllerListNotesParams = {
-/**
- * Page number
- */
-page?: string;
-/**
- * Number of items per page
- */
-pageSize?: string;
-};
+export interface UserResponseDto {
+  id: number;
+  email: string;
+  name: string;
+}

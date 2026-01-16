@@ -5,14 +5,9 @@
  * API documentation for LearnoteAI
  * OpenAPI spec version: 1.0
  */
+import type { MeResponseDtoUser } from './meResponseDtoUser';
 
-export type NotesControllerListNotesParams = {
-/**
- * Page number
- */
-page?: string;
-/**
- * Number of items per page
- */
-pageSize?: string;
-};
+export interface MeResponseDto {
+  message: string;
+  user: MeResponseDtoUser;
+}

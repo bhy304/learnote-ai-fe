@@ -42,7 +42,7 @@ export const notesControllerCreateNote = <TData = AxiosResponse<NoteCreateRespon
  * @summary List notes with pagination
  */
 export const notesControllerListNotes = <TData = AxiosResponse<NoteListResponseDto>>(
-    params: NotesControllerListNotesParams, options?: AxiosRequestConfig
+    params?: NotesControllerListNotesParams, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.get(
       `/notes`,{

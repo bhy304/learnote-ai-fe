@@ -40,17 +40,21 @@
         "parameters": [
           {
             "name": "page",
-            "required": true,
+            "required": false,
             "in": "query",
+            "description": "Page number",
             "schema": {
+              "example": "1",
               "type": "string"
             }
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
+            "description": "Number of items per page",
             "schema": {
+              "example": "5",
               "type": "string"
             }
           }
@@ -84,7 +88,9 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the note",
             "schema": {
+              "example": "1",
               "type": "string"
             }
           }
@@ -118,7 +124,9 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the note",
             "schema": {
+              "example": "1",
               "type": "string"
             }
           }
@@ -165,7 +173,9 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the note to update",
             "schema": {
+              "example": "1",
               "type": "string"
             }
           }
@@ -207,7 +217,9 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the note to delete",
             "schema": {
+              "example": "1",
               "type": "string"
             }
           }
@@ -327,7 +339,9 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the todo to update",
             "schema": {
+              "example": "1",
               "type": "string"
             }
           }
@@ -369,14 +383,25 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "The ID of the todo to delete",
             "schema": {
+              "example": "1",
               "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Todo deleted successfully"
+            "description": "Todo deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "message": "Todo deleted successfully"
+                  }
+                }
+              }
+            }
           }
         },
         "security": [
@@ -404,9 +429,17 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "User successfully registered.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
           }
         },
+        "summary": "Register a new user",
         "tags": ["auth"]
       }
     },
@@ -414,11 +447,32 @@
       "post": {
         "operationId": "AuthController_login",
         "parameters": [],
-        "responses": {
-          "201": {
-            "description": ""
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "example": {
+                  "email": "test@test.com",
+                  "password": "password123"
+                }
+              }
+            }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Login successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Login with local strategy",
         "tags": ["auth"]
       }
     },
@@ -431,18 +485,31 @@
           "content": {
             "application/json": {
               "schema": {
-                "example": {
-                  "refreshToken": "string"
-                }
+                "type": "object",
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "your-refresh-token"
+                  }
+                },
+                "required": ["refreshToken"]
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "200": {
+            "description": "Access token refreshed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshResponseDto"
+                }
+              }
+            }
           }
         },
+        "summary": "Refresh access token",
         "tags": ["auth"]
       }
     },
@@ -452,9 +519,22 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "Profile retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponseDto"
+                }
+              }
+            }
           }
         },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Get current user profile (JWT verification test)",
         "tags": ["auth"]
       }
     }
@@ -467,12 +547,20 @@
   },
   "tags": [
     {
+      "name": "auth",
+      "description": "Authentication and registration"
+    },
+    {
       "name": "dashboard",
-      "description": "Endpoints related to user dashboard"
+      "description": "User dashboard and todos"
     },
     {
       "name": "notes",
-      "description": "Endpoints related to user notes"
+      "description": "User notes and AI analysis"
+    },
+    {
+      "name": "app",
+      "description": "Base application endpoints"
     }
   ],
   "servers": [],
@@ -488,6 +576,11 @@
       "CreateNoteDto": {
         "type": "object",
         "properties": {
+          "title": {
+            "type": "string",
+            "example": "New Note Title",
+            "description": "The title of the note. If omitted, AI will generate one."
+          },
           "rawContent": {
             "type": "string",
             "example": "This is the raw content of the note.",
@@ -937,6 +1030,68 @@
           }
         },
         "required": ["email", "password", "name"]
+      },
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "test@test.com"
+          },
+          "name": {
+            "type": "string",
+            "example": "tester"
+          }
+        },
+        "required": ["id", "email", "name"]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "example": "jwt-access-token-example"
+          },
+          "refreshToken": {
+            "type": "string",
+            "example": "jwt-refresh-token-example"
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserResponseDto"
+          }
+        },
+        "required": ["accessToken", "refreshToken", "user"]
+      },
+      "RefreshResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "example": "jwt-access-token-example"
+          }
+        },
+        "required": ["accessToken"]
+      },
+      "MeResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "JWT works"
+          },
+          "user": {
+            "type": "object",
+            "example": {
+              "userId": 1,
+              "email": "test@test.com"
+            }
+          }
+        },
+        "required": ["message", "user"]
       }
     }
   }

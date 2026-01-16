@@ -12,9 +12,10 @@ import type {
 } from 'axios';
 
 import type {
-  LoginDto,
+  AuthControllerRefreshBody,
   LoginResponseDto,
   MeResponseDto,
+  RefreshResponseDto,
   SignupDto,
   UserResponseDto
 } from '../../../models/generated';
@@ -34,18 +35,29 @@ export const authControllerSignup = <TData = AxiosResponse<UserResponseDto>>(
     );
   }
 /**
- * @summary Log in with email and password
+ * @summary Login with local strategy
  */
 export const authControllerLogin = <TData = AxiosResponse<LoginResponseDto>>(
-    loginDto: LoginDto, options?: AxiosRequestConfig
+    authControllerLoginBody: unknown, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
       `/auth/login`,
-      loginDto,options
+      authControllerLoginBody,options
     );
   }
 /**
- * @summary Get current user information (JWT test)
+ * @summary Refresh access token
+ */
+export const authControllerRefresh = <TData = AxiosResponse<RefreshResponseDto>>(
+    authControllerRefreshBody: AuthControllerRefreshBody, options?: AxiosRequestConfig
+ ): Promise<TData> => {
+    return axios.default.post(
+      `/auth/refresh`,
+      authControllerRefreshBody,options
+    );
+  }
+/**
+ * @summary Get current user profile (JWT verification test)
  */
 export const authControllerGetMe = <TData = AxiosResponse<MeResponseDto>>(
      options?: AxiosRequestConfig
@@ -56,4 +68,5 @@ export const authControllerGetMe = <TData = AxiosResponse<MeResponseDto>>(
   }
 export type AuthControllerSignupResult = AxiosResponse<UserResponseDto>
 export type AuthControllerLoginResult = AxiosResponse<LoginResponseDto>
+export type AuthControllerRefreshResult = AxiosResponse<RefreshResponseDto>
 export type AuthControllerGetMeResult = AxiosResponse<MeResponseDto>
