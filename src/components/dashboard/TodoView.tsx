@@ -6,10 +6,7 @@ export default function TodoView() {
   const { data: todos, isLoading } = useDashboardTodos();
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-slate-800">TODO</h2>
-      </div>
+    <section className="h-full flex flex-col gap-6">
       {isLoading ? <KanbanSkeleton /> : <KanbanBoard initialTodos={todos || []} />}
     </section>
   );

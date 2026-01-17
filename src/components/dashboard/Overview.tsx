@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 import { DataTable } from '@/components/common/DataTable';
 import { TableSkeleton, StatsSkeleton } from '@/components/dashboard/DashboardSkeleton';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -17,8 +18,8 @@ export default function Overview() {
 
   const { data: dashboardData, isLoading: isDashboardLoading } = useDashboard();
   const { data: notes, isLoading: isNotesLoading } = useNotes({
-    page: String(page),
-    pageSize: String(PAGE_SIZE),
+    page: page,
+    pageSize: PAGE_SIZE,
   });
 
   if (isDashboardLoading) {
@@ -34,32 +35,33 @@ export default function Overview() {
 
   return (
     <>
-      <DashboardStats dashboardData={dashboardData} />
-      <Heatmap dashboardData={dashboardData} />
-      <section className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-slate-800">학습 노트 목록</h2>
-          <Button
-            className="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white"
-            onClick={() => navigate('/notes/new')}
-          >
-            노트 생성
-          </Button>
-        </div>
-        {isNotesLoading ? (
-          <TableSkeleton />
-        ) : (
-          <div className="overflow-hidden">
-            <DataTable
-              columns={columns}
-              data={notes?.items || []}
-              pageCount={notes ? Math.ceil(notes.total / PAGE_SIZE) : 0}
-              pageIndex={page - 1}
-              onPageChange={setPage}
-            />
+        <DashboardStats dashboardData={dashboardData} />
+        <Heatmap dashboardData={dashboardData} />
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-slate-800">학습 노트</h2>
+            <Button
+              className="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white font-medium shadow-sm transition-all hover:shadow-md pl-3 pr-4"
+              onClick={() => navigate('/notes/new')}
+            >
+              <Plus className="size-4 mr-2" />
+              노트 생성
+            </Button>
           </div>
-        )}
-      </section>
+          {isNotesLoading ? (
+            <TableSkeleton />
+          ) : (
+            <div className="overflow-hidden">
+              <DataTable
+                columns={columns}
+                data={notes?.items || []}
+                pageCount={notes ? Math.ceil(notes.total / PAGE_SIZE) : 0}
+                pageIndex={page - 1}
+                onPageChange={setPage}
+              />
+            </div>
+          )}
+        </section>
     </>
   );
 }
