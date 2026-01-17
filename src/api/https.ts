@@ -88,7 +88,7 @@ axiosInstance.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       } catch (error) {
-        processQueue(error);
+        processQueue(error as Error);
         useAuthStore.getState().clearAuth();
         window.location.replace('/login');
         return Promise.reject(error);

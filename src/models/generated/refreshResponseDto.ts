@@ -8,4 +8,6 @@
 
 export interface RefreshResponseDto {
   accessToken: string;
+  /** @nullable */
+  refreshToken?: string | null;
 }

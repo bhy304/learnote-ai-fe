@@ -67,7 +67,7 @@ export const dashboardControllerUpdateTodo = <TData = AxiosResponse<TodoResponse
 /**
  * @summary Delete a todo
  */
-export const dashboardControllerDeleteTodo = <TData = AxiosResponse<unknown>>(
+export const dashboardControllerDeleteTodo = <TData = AxiosResponse<void>>(
     id: string, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.delete(
@@ -78,4 +78,4 @@ export type DashboardControllerGetDashboardResult = AxiosResponse<DashboardSumma
 export type DashboardControllerGetTodosResult = AxiosResponse<TodoResponseDto[]>
 export type DashboardControllerCreateTodoResult = AxiosResponse<TodoResponseDto>
 export type DashboardControllerUpdateTodoResult = AxiosResponse<TodoResponseDto>
-export type DashboardControllerDeleteTodoResult = AxiosResponse<unknown>
+export type DashboardControllerDeleteTodoResult = AxiosResponse<void>

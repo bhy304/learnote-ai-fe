@@ -8,8 +8,9 @@
 
 /**
  * Deadline type (SHORT_TERM or LONG_TERM)
+ * @nullable
  */
-export type LearningTodoItemDtoDeadlineType = typeof LearningTodoItemDtoDeadlineType[keyof typeof LearningTodoItemDtoDeadlineType];
+export type LearningTodoItemDtoDeadlineType = typeof LearningTodoItemDtoDeadlineType[keyof typeof LearningTodoItemDtoDeadlineType] | null;
 
 
 export const LearningTodoItemDtoDeadlineType = {

@@ -7,12 +7,6 @@
  */
 
 export type NotesControllerListNotesParams = {
-/**
- * Page number
- */
-page?: string;
-/**
- * Number of items per page
- */
-pageSize?: string;
+page?: number;
+pageSize?: number;
 };
