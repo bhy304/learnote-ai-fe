@@ -29,7 +29,7 @@ export default function DashboardStats({ dashboardData }: DashboardStatsProps) {
   ];
 
   return (
-    <section className="grid grid-cols-3 gap-6 mb-8">
+    <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       {stats.map((stat, index) => (
         <Card
           key={index}
