@@ -1,32 +1,32 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import { useNote } from '@/hooks/useNote';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
-  ArrowLeft,
-  Pencil,
-  Trash2,
-  Search,
-  Target,
-  CheckCircle2,
-  Rocket,
-  FileText,
-  ListPlus,
-  Save,
   X,
   Lightbulb,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle2,
+  Search,
+  Rocket,
+  Pencil,
+  ArrowLeft,
+  ListPlus,
+  Save,
+  Trash2,
+  Target,
+  FileText,
 } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AnalysisLoadingView from '@/components/AnalysisLoadingView';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { FieldError } from '@/components/ui/field';
 import notesAPI from '@/api/notes.api';
 import { useQueryClient } from '@tanstack/react-query';
 import type {
@@ -35,18 +35,15 @@ import type {
 } from '@/models/generated';
 import { NoteDeleteDialog } from '@/components/dashboard/NoteDeleteDialog';
 import { useNoteActions } from '@/hooks/useNoteActions';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { InputGroupTextarea } from '@/components/ui/input-group';
+import { updateNoteSchema, type UpdateNoteSchema } from '@/schema/note.schema';
 
 interface NoteSummary {
   oneLineSummary?: string;
   keywords?: string[];
 }
-
-const updateNoteSchema = z.object({
-  title: z.string().min(1, '제목을 입력해 주세요.'),
-  refinedContent: z.string().min(1, '내용을 입력해 주세요.'),
-});
-
-type UpdateNoteSchema = z.infer<typeof updateNoteSchema>;
 
 export default function NoteDetail() {
   const { id } = useParams<{ id: string }>();
@@ -58,6 +55,7 @@ export default function NoteDetail() {
   const [selectedIndices, setSelectedIndices] = useState<Set<number>>(new Set());
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [showRawContent, setShowRawContent] = useState(true);
 
   const toggleSelect = (index: number) => {
     const newSet = new Set(selectedIndices);
@@ -99,13 +97,13 @@ export default function NoteDetail() {
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<UpdateNoteSchema>({
+  const { control, handleSubmit, reset } = useForm<UpdateNoteSchema>({
     resolver: zodResolver(updateNoteSchema),
+    mode: 'onChange',
+    defaultValues: {
+      title: note?.title || '',
+      refinedContent: note?.refinedNote || note?.rawContent || '',
+    },
   });
 
   const { deleteNote, updateNote, isUpdating } = useNoteActions({
@@ -195,7 +193,6 @@ export default function NoteDetail() {
           isAnalyzing ? 'blur-[2px] opacity-60' : 'animate-in fade-in',
         )}
       >
-        {/* 상단 액션 바 */}
         <div className="flex items-center justify-between">
           <Button
             variant="ghost"
@@ -265,26 +262,33 @@ export default function NoteDetail() {
             />
           </div>
         </div>
-
         {/* 헤더: 제목 */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 text-slate-400 text-sm">
+          {/* <div className="flex items-center gap-2 text-slate-400 text-sm">
             <FileText className="size-3.5" />
             <span>분석 노트</span>
-          </div>
+          </div> */}
           {isEditing ? (
             <div className="space-y-1">
-              <input
-                {...register('title')}
-                className={cn(
-                  'w-full text-3xl md:text-4xl font-bold tracking-tight text-slate-900 border-b-2 border-slate-100 focus:border-primary outline-none bg-transparent py-1 transition-all',
-                  errors.title && 'border-rose-300',
+              <Controller
+                name="title"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <>
+                    <input
+                      {...field}
+                      id="form-title"
+                      autoFocus
+                      className="w-full text-3xl md:text-4xl font-bold tracking-tight text-slate-900 border-b-2 border-slate-100 focus:border-primary outline-none bg-transparent py-1 transition-all"
+                      placeholder="제목을 입력하세요"
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.invalid && fieldState.error && (
+                      <FieldError className="pl-1">{fieldState.error.message}</FieldError>
+                    )}
+                  </>
                 )}
-                placeholder="제목을 입력하세요"
               />
-              {errors.title && (
-                <p className="text-xs text-rose-500 font-bold pl-1">{errors.title.message}</p>
-              )}
             </div>
           ) : (
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 leading-[1.2]">
@@ -293,103 +297,35 @@ export default function NoteDetail() {
           )}
         </div>
 
-        {/* 콘텐츠 영역: 편집 모드일 때 사이드바 레이아웃 적용 */}
-        <div className={cn('grid gap-12', isEditing ? 'lg:grid-cols-3' : 'grid-cols-1')}>
-          <div className={cn('space-y-12', isEditing ? 'lg:col-span-2' : '')}>
-            {/* 1. 학습 노트 내용 */}
+        <div className="grid gap-12 grid-cols-1">
+          <div className="space-y-20">
             {!isAnalyzing && (
-              <section className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500">
-                    학습 노트
-                  </h3>
-                  {note.refinedNote ? (
-                    <Badge
-                      variant="secondary"
-                      className="bg-emerald-50 text-emerald-600 text-[10px] font-bold border-emerald-100 py-0 h-5"
-                    >
-                      나의 정리 완료
-                    </Badge>
-                  ) : (
-                    <Badge
-                      variant="secondary"
-                      className="bg-indigo-50 text-indigo-500 text-[10px] font-bold border-indigo-100 py-0 h-5"
-                    >
-                      AI 분석 초안
-                    </Badge>
-                  )}
-                </div>
-
-                {isEditing && (
-                  <div className="p-5 bg-amber-50/80 border border-amber-200/50 rounded-2xl flex gap-4 animate-in fade-in slide-in-from-top-2">
-                    <Lightbulb className="size-5 text-amber-500 shrink-0 mt-0.5" />
-                    <div className="space-y-1.5">
-                      <p className="text-sm font-bold text-amber-900 flex items-center gap-2">
-                        전문가 다듬기 가이드
-                      </p>
-                      <p className="text-xs text-amber-800/90 leading-relaxed font-medium">
-                        <strong>Tip:</strong> 우측의{' '}
-                        <span className="underline underline-offset-2">팩트 체크</span> 결과를
-                        참고하여 내용을 보완해보세요. 단순한 문구 수정을 넘어 나만의 인사이트를 한
-                        줄 더 추가하는 것이 최고의 학습법입니다.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {isEditing ? (
-                  <div className="space-y-3">
-                    <Textarea
-                      {...register('refinedContent')}
-                      className={cn(
-                        'min-h-[500px] bg-white border-2 focus-visible:ring-2 focus-visible:ring-primary/10 p-6 text-lg leading-relaxed text-slate-700 resize-none shadow-sm rounded-2xl transition-all',
-                        errors.refinedContent
-                          ? 'border-rose-300 focus-visible:ring-rose-500/10'
-                          : 'border-slate-100 focus-visible:border-primary/30',
-                      )}
-                      placeholder="내용을 입력하세요."
-                    />
-                    {errors.refinedContent && (
-                      <p className="text-xs text-rose-500 font-bold pl-2">
-                        {errors.refinedContent.message}
-                      </p>
-                    )}
-                  </div>
-                ) : (
-                  <div className="p-10 rounded-3xl bg-white border border-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] transition-all duration-300">
-                    <div className="text-slate-800 leading-relaxed whitespace-pre-wrap text-lg font-medium">
-                      {note.refinedNote || note.rawContent}
-                    </div>
-                  </div>
-                )}
-              </section>
-            )}
-
-            {/* 일반 모드일 때의 섹션들 */}
-            {!isEditing && (
               <div className="space-y-16">
-                {/* 핵심 요약 */}
-                <section className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Target className="size-5 text-slate-400" />
-                    <h3 className="text-lg font-bold text-slate-900">핵심 요약</h3>
+                {/* 1. 핵심 요약 */}
+                <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100">
+                      <Target className="size-4 text-slate-800" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800">핵심 요약</h3>
                   </div>
                   <p className="text-xl text-slate-800 leading-relaxed font-semibold">{summary}</p>
                 </section>
-
-                {/* 학습 키워드 */}
+                {/* 2. 학습 키워드 */}
                 {keywords.length > 0 && (
-                  <section className="space-y-4">
-                    <div className="flex items-center gap-2">
-                      <Search className="size-5 text-slate-400" />
-                      <h3 className="text-lg font-bold text-slate-900">학습 키워드</h3>
+                  <section className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-75">
+                    <div className="flex items-center gap-2.5">
+                      <div className="size-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100">
+                        <Search className="size-4 text-slate-800" />
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-800">학습 키워드</h3>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {keywords.map((keyword: string, i: number) => (
                         <Badge
                           key={i}
                           variant="outline"
-                          className="px-3 py-1 bg-white text-slate-600 border-slate-200 font-medium rounded-full"
+                          className="px-4 py-1.5 bg-slate-50/50 text-slate-600 border-slate-200 font-bold rounded-full shadow-none text-sm"
                         >
                           {keyword}
                         </Badge>
@@ -397,13 +333,14 @@ export default function NoteDetail() {
                     </div>
                   </section>
                 )}
-
-                {/* 팩트 체크 */}
+                {/* 3. 팩트 체크 */}
                 {factChecks.length > 0 && (
-                  <section className="space-y-4">
-                    <div className="flex items-center gap-2">
-                      <CheckCircle2 className="size-5 text-slate-400" />
-                      <h3 className="text-lg font-bold text-slate-900">팩트 체크</h3>
+                  <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="flex items-center gap-2.5">
+                      <div className="size-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100">
+                        <CheckCircle2 className="size-4 text-slate-800" />
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-800">팩트 체크</h3>
                     </div>
                     <div className="space-y-6">
                       {factChecks.map(
@@ -413,35 +350,28 @@ export default function NoteDetail() {
                             className="group relative pl-6 border-l-2 border-slate-100 hover:border-slate-300 transition-colors"
                           >
                             <div className="space-y-3">
-                              <div className="flex items-start gap-2">
+                              <div className="flex items-center gap-2 ">
                                 <span
                                   className={cn(
-                                    'text-xs font-bold px-2 py-0.5 rounded border uppercase tracking-tight whitespace-nowrap shrink-0',
+                                    'text-xs font-bold px-2 py-0.5 rounded border uppercase tracking-tighter whitespace-nowrap shrink-0',
                                     fact.verdict === 'CORRECT'
                                       ? 'text-emerald-600 border-emerald-200 bg-emerald-50/50'
                                       : 'text-rose-500 border-rose-200 bg-rose-50/50',
                                   )}
                                 >
-                                  {fact.verdict === 'CORRECT' && 'TRUE'}
-                                  {fact.verdict === 'PARTIALLY_TRUE' && 'PARTIALLY TRUE'}
-                                  {fact.verdict === 'FALSE' && 'FALSE'}
-                                  {fact.verdict === 'MISLEADING' && 'MISLEADING'}
-                                  {!['CORRECT', 'PARTIALLY_TRUE', 'FALSE', 'MISLEADING'].includes(
-                                    fact.verdict || '',
-                                  ) && fact.verdict}
+                                  {fact.verdict}
                                 </span>
-                                <span className="font-bold text-slate-800">{fact.comment}</span>
+                                <span className="font-bold text-slate-800 text-base">
+                                  {fact.comment}
+                                </span>
                               </div>
                               {fact.fact && (
-                                <p className="text-slate-700 leading-relaxed">{fact.fact}</p>
-                              )}
-                              {fact.originalText && (
-                                <p className="text-sm text-slate-400 italic line-through decoration-slate-300/50">
-                                  {fact.originalText}
+                                <p className="text-slate-700 leading-relaxed text-base">
+                                  {fact.fact}
                                 </p>
                               )}
                               {fact.correction && (
-                                <div className="text-slate-700 bg-slate-50 p-4 rounded-xl border border-dotted border-slate-200">
+                                <div className="text-slate-700 bg-slate-50/50 p-6 rounded-xl border border-slate-100/80">
                                   <p className="text-base leading-relaxed">{fact.correction}</p>
                                 </div>
                               )}
@@ -452,18 +382,21 @@ export default function NoteDetail() {
                     </div>
                   </section>
                 )}
-
-                {/* 다음 학습 추천 (할 일 생성 기능 포함) */}
+                {/* 4. 다음 학습 추천 (할 일) */}
                 {suggestedTodos.length > 0 && (
-                  <section className="space-y-6" id="suggestedTodos">
-                    <div className="flex items-center gap-2">
-                      <Rocket className="size-5 text-slate-400" />
-                      <h3 className="text-lg font-bold text-slate-900">다음 학습 추천</h3>
+                  <section
+                    className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700"
+                    id="suggestedTodos"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="size-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100">
+                        <Rocket className="size-4 text-slate-800" />
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900">다음 학습 추천</h3>
                       {isSelectionMode && (
                         <div className="flex gap-2 ml-auto">
                           <Button
                             variant="default"
-                            size="sm"
                             onClick={handleCreateTodos}
                             className="h-8 shadow-sm"
                           >
@@ -471,7 +404,6 @@ export default function NoteDetail() {
                           </Button>
                           <Button
                             variant="ghost"
-                            size="sm"
                             onClick={() => {
                               setIsSelectionMode(false);
                               setSelectedIndices(new Set());
@@ -494,30 +426,21 @@ export default function NoteDetail() {
                             key={i}
                             onClick={() => !isCreated && isSelectionMode && toggleSelect(i)}
                             className={cn(
-                              'flex items-start gap-4 p-6 rounded-2xl transition-all duration-300 group border relative overflow-hidden',
+                              'flex items-start gap-4 p-6 rounded-xl transition-all duration-300 group border relative overflow-hidden',
                               isCreated
                                 ? 'bg-slate-50 border-slate-100 opacity-80'
                                 : isSelectionMode
                                   ? selectedIndices.has(i)
-                                    ? 'border-primary bg-primary/5 shadow-md ring-1 ring-primary/20'
+                                    ? 'border-primary bg-primary/5 shadow-md ring-1 ring-primary/20 cursor-pointer'
                                     : 'bg-white border-slate-100 hover:border-slate-200 cursor-pointer'
-                                  : 'bg-white border-slate-100 shadow-sm hover:shadow-md',
+                                  : 'bg-white border-slate-100 shadow-sm hover:shadow-md ',
                             )}
                           >
                             {isCreated && (
-                              <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <div className="absolute top-4 right-4 bg-emerald-100 text-emerald-600 text-xs font-bold px-3 py-1.5 rounded-full z-10 flex items-center gap-1 shadow-sm cursor-help">
-                                      <CheckCircle2 className="size-3.5" />
-                                      추가됨
-                                    </div>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>이미 할 일 목록에 추가된 항목입니다.</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
+                              <div className="absolute top-4 right-4 bg-emerald-100 text-emerald-600 text-sm font-bold px-3 py-1 rounded-full z-10 flex items-center gap-1 shadow-sm">
+                                <CheckCircle2 className="size-3" />
+                                추가됨
+                              </div>
                             )}
 
                             {isSelectionMode ? (
@@ -556,7 +479,7 @@ export default function NoteDetail() {
                                 {todo.content}
                               </h4>
                               {todo.reason && (
-                                <p className="text-sm text-slate-500 font-normal leading-relaxed">
+                                <p className="text-base text-slate-500 font-normal leading-relaxed">
                                   {todo.reason}
                                 </p>
                               )}
@@ -567,34 +490,124 @@ export default function NoteDetail() {
                     </div>
                   </section>
                 )}
+                {/* 5. 원본 노트 (참조용 격리) */}
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="size-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100">
+                        <FileText className="size-4 text-slate-800" />
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-800">원본 내용</h3>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowRawContent(!showRawContent)}
+                      className="text-slate-400 hover:text-slate-500 font-bold text-base p-1 px-2 h-auto hover:bg-slate-50 rounded-md transition-colors flex items-center gap-1.5 cursor-pointer"
+                    >
+                      {showRawContent ? (
+                        <>
+                          <ChevronUp className="size-3.5" />
+                          접기
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="size-3.5" />
+                          펼쳐보기
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  {showRawContent && (
+                    <div className="p-8 rounded-xl bg-slate-50/50 border border-slate-100 text-slate-600 leading-relaxed whitespace-pre-wrap italic animate-in fade-in slide-in-from-top-2 duration-300 text-base">
+                      {note.rawContent}
+                    </div>
+                  )}
+                </div>
+                {/* 6. 나의 학습 노트 (학습의 최종 결과물) */}
+                <section className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+                  <div className="flex items-center gap-2">
+                    <div className="size-8 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100">
+                      <Pencil className="size-4 text-slate-800" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800">나의 학습 노트</h3>
+                    <Badge
+                      variant="secondary"
+                      className="bg-emerald-50 text-emerald-600 text-xs font-bold border-emerald-100 py-0.5 h-auto px-3"
+                    >
+                      AI 분석 완료
+                    </Badge>
+                  </div>
+                  <div className="p-6 bg-slate-50/50 border border-slate-100 rounded-3xl flex gap-4 animate-in fade-in duration-500">
+                    <Lightbulb className="size-5 text-slate-400 shrink-0 mt-0.5" />
+                    <div className="space-y-2">
+                      <p className="text-base font-bold text-slate-600">Expert Guide</p>
+                      <p className="text-base text-slate-500 leading-relaxed font-medium">
+                        수정 버튼을 눌러 AI가 정리해준 내용을 나만의 언어로 다시 기록할 수 있어요.
+                        <br />
+                        마크다운(Markdown) 문법을 활용하면 더욱 구조적이고 보기 좋게 정리할 수
+                        있어요.
+                      </p>
+                    </div>
+                  </div>
+
+                  {isEditing ? (
+                    <div className="space-y-3">
+                      <Controller
+                        name="refinedContent"
+                        control={control}
+                        render={({ field, fieldState }) => (
+                          <>
+                            <InputGroupTextarea
+                              {...field}
+                              id="form-refined-content"
+                              className="min-h-[500px] bg-white border-2 p-8 text-lg leading-relaxed text-slate-700 resize-none shadow-sm rounded-xl transition-all border-slate-200 focus:border-slate-400 focus-visible:ring-0 placeholder:text-lg"
+                              placeholder="나만의 언어로 노트를 정리해 보세요."
+                              aria-invalid={fieldState.invalid}
+                            />
+                            {fieldState.invalid && fieldState.error && (
+                              <FieldError className="pl-2">{fieldState.error.message}</FieldError>
+                            )}
+                          </>
+                        )}
+                      />
+                    </div>
+                  ) : (
+                    <div className="p-10 rounded-xl bg-white border-2 shadow-sm transition-all duration-500 hover:shadow-md  border-slate-400">
+                      <div className="prose prose-slate prose-lg max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-p:leading-relaxed prose-p:text-slate-800 prose-strong:text-slate-900 prose-strong:font-bold prose-code:text-slate-900 prose-code:bg-slate-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none prose-pre:bg-slate-900 prose-pre:text-slate-50 prose-img:rounded-l-none prose-img:rounded-r-xl ">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {note.refinedNote || note.rawContent || ''}
+                        </ReactMarkdown>
+                      </div>
+                    </div>
+                  )}
+                </section>
               </div>
             )}
           </div>
-
-          {/* 편집 모드일 때 나타나는 우측 참조 사이드바 */}
-          {isEditing && (
-            <div className="lg:col-span-1 space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-              <div className="sticky top-8 space-y-8">
-                {/* 팩트 체크 참조 패널 */}
+          {/* 편집 모드일 때 나타나는 우측 참조 사이드바 (팩트체크용) */}
+          {/* {isEditing && (
+            <div className="lg:col-span-1 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div className="sticky top-8 space-y-6">
                 {factChecks.length > 0 && (
                   <section className="bg-slate-50/50 rounded-3xl border border-slate-100 p-6 space-y-4">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-4 text-slate-400" />
-                      <h3 className="text-sm font-bold text-slate-900 uppercase tracking-tight">
-                        팩트 체크 참조
+                      <h3 className="text-base font-bold text-slate-400 uppercase tracking-tight">
+                        실시간 참조 가이드
                       </h3>
                     </div>
-                    <div className="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-2">
+                    <div className="space-y-4 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
                       {factChecks.map(
                         (fact: NoteAnalysisResponseDtoFactChecksItem, index: number) => (
                           <div
                             key={index}
-                            className="text-xs space-y-2 pb-4 border-b border-slate-100 last:border-0 last:pb-0"
+                            className="text-base space-y-2 pb-4 border-b border-slate-100 last:border-0 last:pb-0"
                           >
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5">
                               <span
                                 className={cn(
-                                  'px-1.5 py-0.5 rounded-[4px] font-bold text-[9px]',
+                                  'px-2 py-0.5 rounded-[4px] font-bold text-sm uppercase',
                                   fact.verdict === 'CORRECT'
                                     ? 'bg-emerald-100 text-emerald-600'
                                     : 'bg-rose-100 text-rose-600',
@@ -602,12 +615,10 @@ export default function NoteDetail() {
                               >
                                 {fact.verdict}
                               </span>
-                              <span className="font-bold text-slate-700 leading-snug">
-                                {fact.comment}
-                              </span>
+                              <span className="font-bold text-slate-700">{fact.comment}</span>
                             </div>
                             {fact.correction && (
-                              <p className="text-slate-500 leading-relaxed bg-white/50 p-2 rounded-lg border border-slate-100">
+                              <p className="text-slate-500 leading-relaxed bg-white/80 p-2.5 rounded-xl border border-slate-100">
                                 {fact.correction}
                               </p>
                             )}
@@ -617,24 +628,12 @@ export default function NoteDetail() {
                     </div>
                   </section>
                 )}
-
-                {/* 원본 기록 대조 패널 */}
-                <section className="bg-slate-50/50 rounded-3xl border border-slate-100 p-6 space-y-4">
-                  <div className="flex items-center gap-2">
-                    <FileText className="size-4 text-slate-400" />
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-tight">
-                      원본 기록
-                    </h3>
-                  </div>
-                  <div className="text-xs text-slate-500 leading-relaxed whitespace-pre-wrap max-h-[300px] overflow-y-auto custom-scrollbar italic bg-white/50 p-4 rounded-xl border border-dashed border-slate-200">
-                    {note.rawContent}
-                  </div>
-                </section>
               </div>
             </div>
-          )}
+          )} */}
         </div>
-        <div className="pt-20 text-center pb-20">
+
+        {/* <div className="pt-20 text-center pb-20">
           <Button
             variant="ghost"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -642,7 +641,7 @@ export default function NoteDetail() {
           >
             맨 위로 돌아가기
           </Button>
-        </div>
+        </div> */}
       </main>
     </div>
   );
