@@ -34,7 +34,7 @@ const notesAPI = {
     return response;
   },
   async saveLearningTodos(id: string, data: SaveLearningTodosDto) {
-    const response = await https.post<SaveLearningTodosDto, TodoResponseDto>(
+    const response = await https.post<SaveLearningTodosDto, TodoResponseDto[]>(
       `/notes/${id}/todos`,
       data,
     );

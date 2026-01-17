@@ -13,6 +13,7 @@ import { useAuthStore } from '@/store/authStore';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
+import { createEmptyDashboardData } from '@/models/dashboard';
 
 export default function Signup() {
   const queryClient = useQueryClient();
@@ -46,13 +47,7 @@ export default function Signup() {
         queryClient.clear();
 
         // 대시보드 데이터를 '비어있음' 상태로 미리 채워넣기 (스켈레톤 방지)
-        queryClient.setQueryData(['dashboard'], {
-          userId: user.id,
-          totalNotes: 0,
-          currentStreakDays: 0,
-          thisMonthNotes: 0,
-          activity: [],
-        });
+        queryClient.setQueryData(['dashboard'], createEmptyDashboardData(user.id));
 
         setAuth(accessToken, refreshToken);
         setUser(user);
