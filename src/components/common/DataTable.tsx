@@ -23,14 +23,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { MoreHorizontalIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -69,7 +62,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="overflow-hidden rounded-lg border">
-        <Table>
+        <Table className="table-fixed w-full">
           <TableHeader className="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors bg-muted/50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-muted/50 ">
@@ -77,7 +70,10 @@ export function DataTable<TData, TValue>({
                   return (
                     <TableHead
                       key={header.id}
-                      className="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0"
+                      className={cn(
+                        'text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&:has([role=checkbox])]:pr-0',
+                        (header.column.columnDef.meta as any)?.className,
+                      )}
                     >
                       {header.isPlaceholder
                         ? null
@@ -85,7 +81,6 @@ export function DataTable<TData, TValue>({
                     </TableHead>
                   );
                 })}
-                <TableHead className="w-12"></TableHead>
               </TableRow>
             ))}
           </TableHeader>
@@ -97,26 +92,15 @@ export function DataTable<TData, TValue>({
                     return (
                       <TableCell
                         key={cell.id}
-                        className="p-2  align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 ml-2"
+                        className={cn(
+                          'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 ml-2',
+                          (cell.column.columnDef.meta as any)?.className,
+                        )}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     );
                   })}
-                  <TableCell className="p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon-sm">
-                          <MoreHorizontalIcon />
-                          <span className="sr-only">Open menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>수정</DropdownMenuItem>
-                        <DropdownMenuItem variant="destructive">삭제</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
                 </TableRow>
               ))
             ) : (

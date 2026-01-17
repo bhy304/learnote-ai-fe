@@ -61,26 +61,29 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-white p-4">
+      <Card className="w-full max-w-md border-slate-200 shadow-lg bg-white">
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardHeader>
-            <CardTitle className="text-center text-2xl">로그인</CardTitle>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-center text-2xl font-bold text-slate-900">로그인</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">이메일</FieldLabel>
-                <InputGroup>
+                <FieldLabel htmlFor="email" className="text-base font-medium">
+                  이메일
+                </FieldLabel>
+                <InputGroup className="h-11">
                   <InputGroupInput
                     id="email"
                     type="email"
                     placeholder="이메일을 입력해 주세요."
                     aria-invalid={!!form.formState.errors.email || !!form.formState.errors.root}
                     {...form.register('email')}
+                    className="h-11 text-base placeholder:text-sm"
                   />
                   <InputGroupAddon>
-                    <MailIcon className="text-muted-foreground" />
+                    <MailIcon className="text-slate-400" />
                   </InputGroupAddon>
                 </InputGroup>
                 {form.formState.errors.email && (
@@ -88,17 +91,20 @@ export default function Login() {
                 )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="password">비밀번호</FieldLabel>
-                <InputGroup>
+                <FieldLabel htmlFor="password" className="text-base font-medium">
+                  비밀번호
+                </FieldLabel>
+                <InputGroup className="h-11">
                   <InputGroupInput
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="비밀번호를 입력해 주세요."
                     aria-invalid={!!form.formState.errors.password || !!form.formState.errors.root}
                     {...form.register('password')}
+                    className="h-11 text-base placeholder:text-sm"
                   />
                   <InputGroupAddon>
-                    <LockIcon className="text-muted-foreground" />
+                    <LockIcon className="text-slate-400" />
                   </InputGroupAddon>
                   <InputGroupAddon align="inline-end">
                     <InputGroupButton
@@ -107,7 +113,11 @@ export default function Login() {
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
-                      {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      {showPassword ? (
+                        <EyeOffIcon className="text-slate-400" />
+                      ) : (
+                        <EyeIcon className="text-slate-400" />
+                      )}
                     </InputGroupButton>
                   </InputGroupAddon>
                 </InputGroup>
@@ -118,8 +128,12 @@ export default function Login() {
               </Field>
             </FieldGroup>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4 mt-6">
-            <Button type="submit" className="w-full cursor-pointer">
+          <CardFooter className="flex flex-col gap-4 mt-8">
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full cursor-pointer text-base font-semibold shadow-md"
+            >
               로그인
             </Button>
             <p className="flex items-center justify-between text-sm">

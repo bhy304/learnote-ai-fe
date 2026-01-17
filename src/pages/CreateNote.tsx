@@ -44,14 +44,14 @@ export default function CreateNote() {
   };
 
   return (
-    <main className="container mx-auto py-10 px-4 max-w-[1000px]">
+    <main className="container mx-auto py-10 px-4 max-w-[1000px] min-h-screen bg-white">
       <div className="mb-10">
         <h1 className="text-4xl font-bold tracking-tight mb-2">오늘의 학습 노트</h1>
         <p className="text-muted-foreground text-lg">오늘의 학습 노트를 작성해보세요.</p>
         <div className="mt-6 bp-primary/5 border border-primary/10 rounded-lg p-6 bg-primary/5">
           <h2 className="font-semibold text-primary flex items-center gap-2 mb-3">
             <Lightbulb className="size-5" />
-            학습 노트 작성 가이드
+            학습 가이드
           </h2>
           <ul className="list-disc list-inside  flex  flex-col gap-y-2">
             {[
@@ -94,18 +94,24 @@ export default function CreateNote() {
             )}
           />
         </FieldGroup>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-3">
           <Button
             type="button"
             variant="outline"
-            className="cursor-pointer"
+            size="lg"
+            className="cursor-pointer border-slate-300 text-slate-700 hover:bg-slate-50 font-medium"
             disabled={isSubmitting}
             onClick={() => navigate('/')}
           >
             취소
           </Button>
-          <Button type="submit" className="cursor-pointer" disabled={isSubmitting}>
-            노트 생성
+          <Button
+            type="submit"
+            size="lg"
+            className="cursor-pointer bg-slate-900 hover:bg-slate-800 text-white font-bold shadow-md"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? '생성 중...' : '노트 생성'}
           </Button>
         </div>
       </form>

@@ -9,19 +9,19 @@ interface DashboardStatsProps {
 export default function DashboardStats({ dashboardData }: DashboardStatsProps) {
   const stats = [
     {
-      title: 'Total Notes',
+      title: '전체 노트',
       Icon: NotebookPen,
       value: dashboardData?.totalNotes,
       unit: '개',
     },
     {
-      title: 'Learning Streak',
+      title: '연속 학습일',
       Icon: Flame,
       value: dashboardData?.currentStreakDays,
       unit: '일',
     },
     {
-      title: 'This Month',
+      title: '이번 달 노트',
       Icon: CalendarFold,
       value: dashboardData?.thisMonthNotes,
       unit: '개',
@@ -33,18 +33,16 @@ export default function DashboardStats({ dashboardData }: DashboardStatsProps) {
       {stats.map((stat, index) => (
         <Card
           key={index}
-          className="hover:shadow-md transition-shadow border-none shadow-sm bg-white/50 backdrop-blur-sm gap-4"
+          className="border border-slate-200 shadow-sm bg-white hover:shadow-md transition-all duration-200"
         >
-          <CardHeader className="flex flex-row items-center space-y-0 pb-2">
-            <stat.Icon className="w-4 h-4 text-muted-foreground" />
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {stat.title}
-            </CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-semibold text-slate-600">{stat.title}</CardTitle>
+            <stat.Icon className="h-5 w-5 text-slate-400" />
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="text-4xl font-bold tracking-tight">
-              {stat.value}
-              <span className="text-base font-normal text-muted-foreground ml-1">{stat.unit}</span>
+          <CardContent>
+            <div className="flex items-baseline space-x-1">
+              <span className="text-4xl font-bold tracking-tight text-slate-900">{stat.value}</span>
+              <span className="text-lg text-slate-500 font-medium">{stat.unit}</span>
             </div>
           </CardContent>
         </Card>
