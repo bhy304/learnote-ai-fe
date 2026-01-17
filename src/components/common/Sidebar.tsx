@@ -49,7 +49,7 @@ export default function DashboardSidebar({ activeView, onToggleView }: SidebarPr
 
   return (
     <Sidebar collapsible="icon" className="border-r border-slate-200 shadow-none bg-white">
-      <SidebarHeader className="h-16 flex flex-row items-center justify-between px-4 border-b border-slate-200 bg-white group-data-[collapsible=icon]:px-2">
+      <SidebarHeader className="h-16 flex flex-row items-center justify-between px-4 border-b border-slate-200 bg-white group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0">
         <div className="flex items-center gap-2 font-bold text-slate-900 group-data-[collapsible=icon]:hidden overflow-hidden whitespace-nowrap">
           <img src={logo} alt="Learnote Logo" className="h-6 w-auto object-contain" />
         </div>
@@ -61,7 +61,7 @@ export default function DashboardSidebar({ activeView, onToggleView }: SidebarPr
             Menu
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu className="px-2 group-data-[collapsible=icon]:px-0">
+            <SidebarMenu className="px-2 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-0">
               {items.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
@@ -76,15 +76,13 @@ export default function DashboardSidebar({ activeView, onToggleView }: SidebarPr
                       activeView === item.id && 'bg-slate-100 text-slate-900 font-bold shadow-sm',
                     )}
                   >
-                    <div className="flex items-center gap-3">
-                      <item.icon
-                        className={cn(
-                          'size-5 shrink-0 transition-colors',
-                          activeView === item.id ? 'text-slate-900' : 'text-slate-500',
-                        )}
-                      />
-                      <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
-                    </div>
+                    <item.icon
+                      className={cn(
+                        'size-4 shrink-0 transition-colors',
+                        activeView === item.id ? 'text-slate-900' : 'text-slate-500',
+                      )}
+                    />
+                    <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -94,15 +92,15 @@ export default function DashboardSidebar({ activeView, onToggleView }: SidebarPr
       </SidebarContent>
 
       <SidebarFooter className="border-t border-slate-200 p-2 bg-white">
-        <SidebarMenu>
+        <SidebarMenu className="group-data-[collapsible=icon]:items-center">
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size="lg"
-                  className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                  className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:rounded-full"
                 >
-                  <Avatar className="h-8 w-8 rounded shrink-0">
+                  <Avatar className="h-8 w-8 rounded-full shrink-0">
                     <AvatarFallback className="rounded-full bg-slate-100 text-slate-600 font-bold">
                       {user?.name?.[0] || <User className="h-4 w-4" />}
                     </AvatarFallback>
@@ -134,7 +132,7 @@ export default function DashboardSidebar({ activeView, onToggleView }: SidebarPr
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator /> */}
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer ">
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   로그아웃
                 </DropdownMenuItem>

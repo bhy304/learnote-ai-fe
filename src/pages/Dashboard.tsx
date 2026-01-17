@@ -32,11 +32,13 @@ export default function Dashboard() {
               'container mx-auto px-8 max-w-[1280px] h-full flex flex-col pt-16 pb-16 animate-in fade-in duration-700',
             )}
           >
-            <div className="flex-1 overflow-y-auto no-scrollbar flex flex-col">
-              <div className="min-h-full flex flex-col justify-center py-8">
+            <div className="flex-1 overflow-y-auto no-scrollbar">
+              <div className="py-8">
                 {activeView === 'dashboard' ? (
                   isFirstTimeUser ? (
-                    <EmptyDashboard userName={user?.name || ''} />
+                    <div className="min-h-[calc(100vh-128px)] flex flex-col justify-center">
+                      <EmptyDashboard userName={user?.name || ''} />
+                    </div>
                   ) : (
                     <div className="space-y-12">
                       <Overview />
