@@ -61,13 +61,6 @@ export default function EmptyDashboard({ userName }: EmptyDashboardProps) {
             >
               <Sparkles className="mr-2 w-5 h-5" />첫 노트 작성하기
             </Button>
-            {/* <Button
-              variant="link"
-              className="text-slate-400 hover:text-primary transition-colors cursor-pointer"
-            >
-              <HelpCircle className="w-4 h-4 mr-1" />
-              💡 학습 노트가 처음이신가요? 시작 가이드 보기
-            </Button> */}
           </div>
         </div>
       </Card>

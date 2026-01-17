@@ -67,9 +67,6 @@ export function KanbanCard({ todo, onToggleStatus }: KanbanCardProps) {
           >
             {todo.content}
           </label>
-          {/* {todo.reason && (
-            <p className="text-xs text-muted-foreground line-clamp-2">{todo.reason}</p>
-          )} */}
         </div>
       </CardContent>
     </Card>

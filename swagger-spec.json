@@ -413,7 +413,14 @@
         },
         "responses": {
           "201": {
-            "description": "User successfully created"
+            "description": "User successfully created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -439,7 +446,14 @@
         },
         "responses": {
           "201": {
-            "description": "Login successful, returns JWT tokens"
+            "description": "Login successful, returns JWT tokens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -458,16 +472,21 @@
           "content": {
             "application/json": {
               "schema": {
-                "example": {
-                  "refreshToken": "string"
-                }
+                "$ref": "#/components/schemas/AuthControllerRefreshBody"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "New access token issued"
+            "description": "New access token issued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshResponseDto"
+                }
+              }
+            }
           },
           "401": {
             "description": "Invalid refresh token"
@@ -483,7 +502,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "User profile retrieved"
+            "description": "User profile retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
           },
           "401": {
             "description": "Unauthorized"
@@ -1038,6 +1064,39 @@
           }
         },
         "required": ["email", "password"]
+      },
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "email": { "type": "string" },
+          "name": { "type": "string" }
+        },
+        "required": ["id", "email", "name"]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "refreshToken": { "type": "string" },
+          "user": { "$ref": "#/components/schemas/UserResponseDto" }
+        },
+        "required": ["accessToken", "refreshToken", "user"]
+      },
+      "RefreshResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "refreshToken": { "type": "string", "nullable": true }
+        },
+        "required": ["accessToken"]
+      },
+      "AuthControllerRefreshBody": {
+        "type": "object",
+        "properties": {
+          "refreshToken": { "type": "string" }
+        },
+        "required": ["refreshToken"]
       }
     }
   }

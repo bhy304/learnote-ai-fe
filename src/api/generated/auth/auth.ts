@@ -12,8 +12,12 @@ import type {
 } from 'axios';
 
 import type {
+  AuthControllerRefreshBody,
   LoginDto,
-  SignupDto
+  LoginResponseDto,
+  RefreshResponseDto,
+  SignupDto,
+  UserResponseDto
 } from '../../../models/generated';
 
 
@@ -22,7 +26,7 @@ import type {
   /**
  * @summary User Signup
  */
-export const authControllerSignup = <TData = AxiosResponse<void>>(
+export const authControllerSignup = <TData = AxiosResponse<UserResponseDto>>(
     signupDto: SignupDto, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
@@ -33,7 +37,7 @@ export const authControllerSignup = <TData = AxiosResponse<void>>(
 /**
  * @summary User Login
  */
-export const authControllerLogin = <TData = AxiosResponse<void>>(
+export const authControllerLogin = <TData = AxiosResponse<LoginResponseDto>>(
     loginDto: LoginDto, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
@@ -44,8 +48,8 @@ export const authControllerLogin = <TData = AxiosResponse<void>>(
 /**
  * @summary Refresh Access Token
  */
-export const authControllerRefresh = <TData = AxiosResponse<void>>(
-    authControllerRefreshBody: unknown, options?: AxiosRequestConfig
+export const authControllerRefresh = <TData = AxiosResponse<RefreshResponseDto>>(
+    authControllerRefreshBody: AuthControllerRefreshBody, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
       `/auth/refresh`,
@@ -55,14 +59,14 @@ export const authControllerRefresh = <TData = AxiosResponse<void>>(
 /**
  * @summary Get current user profile
  */
-export const authControllerGetMe = <TData = AxiosResponse<void>>(
+export const authControllerGetMe = <TData = AxiosResponse<UserResponseDto>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.get(
       `/auth/me`,options
     );
   }
-export type AuthControllerSignupResult = AxiosResponse<void>
-export type AuthControllerLoginResult = AxiosResponse<void>
-export type AuthControllerRefreshResult = AxiosResponse<void>
-export type AuthControllerGetMeResult = AxiosResponse<void>
+export type AuthControllerSignupResult = AxiosResponse<UserResponseDto>
+export type AuthControllerLoginResult = AxiosResponse<LoginResponseDto>
+export type AuthControllerRefreshResult = AxiosResponse<RefreshResponseDto>
+export type AuthControllerGetMeResult = AxiosResponse<UserResponseDto>

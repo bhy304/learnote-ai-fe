@@ -5,6 +5,6 @@ export const useDashboard = () => {
   return useQuery({
     queryKey: ['dashboard'],
     queryFn: () => dashboardAPI.getDashboard(),
-    staleTime: 60 * 1000, // 1분 동안 데이터를 신선한 상태로 유지
+    staleTime: 60 * 1000, // 1분 동안 캐시를 fresh 상태로 유지
   });
 };

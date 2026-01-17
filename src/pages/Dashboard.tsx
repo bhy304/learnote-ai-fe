@@ -20,7 +20,7 @@ export default function Dashboard() {
 
   const { data: dashboardData, isLoading } = useDashboard();
 
-  const isFirstTimeUser = !isLoading && dashboardData && dashboardData.totalNotes === 0;
+  const isFirstTimeUser = !isLoading && dashboardData?.totalNotes === 0;
 
   return (
     <SidebarProvider defaultOpen={true}>

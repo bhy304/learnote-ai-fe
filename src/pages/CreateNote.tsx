@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Lightbulb, X, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { cn } from '@/lib/utils';
 import { FieldError } from '@/components/ui/field';
 
 export default function CreateNote() {
