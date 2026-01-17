@@ -18,10 +18,12 @@ interface NoteActionMenuProps {
 export const NoteActionMenu = ({ note }: NoteActionMenuProps) => {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  const { deleteNote } = useNoteActions({});
+  const { deleteNote, isDeleting } = useNoteActions({
+    onSuccessDelete: () => setIsDeleteOpen(false),
+  });
 
-  const handleDelete = async () => {
-    await deleteNote(String(note.id));
+  const handleDelete = () => {
+    deleteNote(String(note.id));
   };
 
   return (
@@ -48,7 +50,7 @@ export const NoteActionMenu = ({ note }: NoteActionMenuProps) => {
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
         onConfirm={handleDelete}
-        isDeleting={false}
+        isDeleting={isDeleting}
       />
     </>
   );
