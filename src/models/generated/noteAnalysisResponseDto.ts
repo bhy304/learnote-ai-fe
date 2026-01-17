@@ -5,9 +5,11 @@
  * API documentation for LearnoteAI
  * OpenAPI spec version: 1.0
  */
+import type { NoteAnalysisResponseDtoFactChecksItem } from './noteAnalysisResponseDtoFactChecksItem';
 import type { NoteAnalysisResponseDtoFeedback } from './noteAnalysisResponseDtoFeedback';
 import type { NoteAnalysisResponseDtoSkillUpdateProposal } from './noteAnalysisResponseDtoSkillUpdateProposal';
 import type { NoteAnalysisResponseDtoStatus } from './noteAnalysisResponseDtoStatus';
+import type { NoteAnalysisResponseDtoSuggestedTodosItem } from './noteAnalysisResponseDtoSuggestedTodosItem';
 import type { NoteAnalysisResponseDtoSummary } from './noteAnalysisResponseDtoSummary';
 
 export interface NoteAnalysisResponseDto {
@@ -21,11 +23,11 @@ export interface NoteAnalysisResponseDto {
   /** Summary of the note */
   summary: NoteAnalysisResponseDtoSummary;
   /** List of fact checks */
-  factChecks: string[];
+  factChecks: NoteAnalysisResponseDtoFactChecksItem[];
   /** Feedback on the note */
   feedback: NoteAnalysisResponseDtoFeedback;
   /** Proposed skill updates */
   skillUpdateProposal: NoteAnalysisResponseDtoSkillUpdateProposal;
-  /** Suggested todo items */
-  suggestedTodos: string[];
+  /** Suggested todo items based on analysis */
+  suggestedTodos: NoteAnalysisResponseDtoSuggestedTodosItem[];
 }

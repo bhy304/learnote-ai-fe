@@ -42,20 +42,18 @@
             "name": "page",
             "required": false,
             "in": "query",
-            "description": "Page number",
             "schema": {
-              "example": "1",
-              "type": "string"
+              "example": 1,
+              "type": "number"
             }
           },
           {
             "name": "pageSize",
             "required": false,
             "in": "query",
-            "description": "Number of items per page",
             "schema": {
-              "example": "5",
-              "type": "string"
+              "example": 5,
+              "type": "number"
             }
           }
         ],
@@ -88,9 +86,8 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the note",
+            "description": "Note ID",
             "schema": {
-              "example": "1",
               "type": "string"
             }
           }
@@ -118,15 +115,15 @@
     },
     "/notes/{id}/todos": {
       "post": {
+        "description": "노트 분석에서 제안된 할 일을 저장합니다. 이미 저장된 동일한 내용의 할 일은 제외되며, 저장 시 기본적으로 체크 상태(isChecked: true)로 설정됩니다.",
         "operationId": "NotesController_saveTodos",
         "parameters": [
           {
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the note",
+            "description": "Note ID",
             "schema": {
-              "example": "1",
               "type": "string"
             }
           }
@@ -173,9 +170,8 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the note to update",
+            "description": "Note ID",
             "schema": {
-              "example": "1",
               "type": "string"
             }
           }
@@ -217,9 +213,8 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the note to delete",
+            "description": "Note ID",
             "schema": {
-              "example": "1",
               "type": "string"
             }
           }
@@ -339,9 +334,8 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the todo to update",
+            "description": "Todo ID",
             "schema": {
-              "example": "1",
               "type": "string"
             }
           }
@@ -383,25 +377,15 @@
             "name": "id",
             "required": true,
             "in": "path",
-            "description": "The ID of the todo to delete",
+            "description": "Todo ID",
             "schema": {
-              "example": "1",
               "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Todo deleted successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "message": "Todo deleted successfully"
-                  }
-                }
-              }
-            }
+            "description": "Todo deleted successfully"
           }
         },
         "security": [
@@ -429,17 +413,13 @@
         },
         "responses": {
           "201": {
-            "description": "User successfully registered.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UserResponseDto"
-                }
-              }
-            }
+            "description": "User successfully created"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         },
-        "summary": "Register a new user",
+        "summary": "User Signup",
         "tags": ["auth"]
       }
     },
@@ -458,18 +438,14 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Login successful.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResponseDto"
-                }
-              }
-            }
+          "201": {
+            "description": "Login successful, returns JWT tokens"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
-        "summary": "Login with local strategy",
+        "summary": "User Login",
         "tags": ["auth"]
       }
     },
@@ -482,31 +458,22 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "refreshToken": {
-                    "type": "string",
-                    "example": "your-refresh-token"
-                  }
-                },
-                "required": ["refreshToken"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Access token refreshed successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RefreshResponseDto"
+                "example": {
+                  "refreshToken": "string"
                 }
               }
             }
           }
         },
-        "summary": "Refresh access token",
+        "responses": {
+          "201": {
+            "description": "New access token issued"
+          },
+          "401": {
+            "description": "Invalid refresh token"
+          }
+        },
+        "summary": "Refresh Access Token",
         "tags": ["auth"]
       }
     },
@@ -516,14 +483,10 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "Profile retrieved successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MeResponseDto"
-                }
-              }
-            }
+            "description": "User profile retrieved"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "security": [
@@ -531,7 +494,7 @@
             "access-token": []
           }
         ],
-        "summary": "Get current user profile (JWT verification test)",
+        "summary": "Get current user profile",
         "tags": ["auth"]
       }
     }
@@ -544,29 +507,21 @@
   },
   "tags": [
     {
-      "name": "auth",
-      "description": "Authentication and registration"
-    },
-    {
       "name": "dashboard",
-      "description": "User dashboard and todos"
+      "description": "Endpoints related to user dashboard"
     },
     {
       "name": "notes",
-      "description": "User notes and AI analysis"
-    },
-    {
-      "name": "app",
-      "description": "Base application endpoints"
+      "description": "Endpoints related to user notes"
     }
   ],
   "servers": [],
   "components": {
     "securitySchemes": {
       "access-token": {
+        "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "type": "http"
+        "bearerFormat": "JWT"
       }
     },
     "schemas": {
@@ -575,13 +530,17 @@
         "properties": {
           "title": {
             "type": "string",
-            "example": "New Note Title",
-            "description": "The title of the note. If omitted, AI will generate one."
+            "example": "Optional Note Title"
           },
           "rawContent": {
             "type": "string",
             "example": "This is the raw content of the note.",
             "description": "The main content of the note"
+          },
+          "date": {
+            "type": "string",
+            "example": "2023-10-27",
+            "description": "The date the note was created"
           }
         },
         "required": ["rawContent"]
@@ -697,7 +656,16 @@
             "description": "List of fact checks",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "id": { "type": "number" },
+                "fact": { "type": "string" },
+                "verified": { "type": "boolean" },
+                "comment": { "type": "string" },
+                "verdict": { "type": "string" },
+                "originalText": { "type": "string" },
+                "correction": { "type": "string" }
+              }
             }
           },
           "feedback": {
@@ -717,14 +685,29 @@
           "suggestedTodos": {
             "example": [
               {
-                "content": "Practice Decorators",
-                "dueDate": "2026-01-15"
+                "content": "Existing Todo",
+                "dueDate": "2026-01-15",
+                "isCreated": true,
+                "isChecked": true
+              },
+              {
+                "content": "New Suggestion",
+                "dueDate": "2026-01-20",
+                "isCreated": false,
+                "isChecked": false
               }
             ],
-            "description": "Suggested todo items",
+            "description": "Suggested todo items based on analysis",
             "type": "array",
             "items": {
-              "type": "string"
+              "type": "object",
+              "properties": {
+                "content": { "type": "string" },
+                "dueDate": { "type": "string" },
+                "isCreated": { "type": "boolean" },
+                "isChecked": { "type": "boolean" },
+                "reason": { "type": "string" }
+              }
             }
           }
         },
@@ -763,7 +746,8 @@
             "type": "string",
             "enum": ["SHORT_TERM", "LONG_TERM"],
             "example": "SHORT_TERM",
-            "description": "Deadline type (SHORT_TERM or LONG_TERM)"
+            "description": "Deadline type (SHORT_TERM or LONG_TERM)",
+            "nullable": true
           }
         },
         "required": ["content"]
@@ -773,6 +757,14 @@
         "properties": {
           "todos": {
             "description": "A list of todos to be saved",
+            "example": [
+              {
+                "content": "React Hooks 심화 학습",
+                "reason": "분석 결과에서 추천됨",
+                "dueDate": "2026-01-20",
+                "deadlineType": "SHORT_TERM"
+              }
+            ],
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LearningTodoItemDto"
@@ -827,6 +819,10 @@
           "createdAt": {
             "type": "string",
             "example": "2026-01-14T12:00:00Z"
+          },
+          "isChecked": {
+            "type": "boolean",
+            "example": true
           }
         },
         "required": [
@@ -838,7 +834,8 @@
           "status",
           "reason",
           "deadlineType",
-          "createdAt"
+          "createdAt",
+          "isChecked"
         ]
       },
       "UpdateNoteDto": {
@@ -1037,72 +1034,10 @@
           },
           "password": {
             "type": "string",
-            "example": "password123"
+            "example": "1234"
           }
         },
         "required": ["email", "password"]
-      },
-      "UserResponseDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "example": 1
-          },
-          "email": {
-            "type": "string",
-            "example": "test@test.com"
-          },
-          "name": {
-            "type": "string",
-            "example": "tester"
-          }
-        },
-        "required": ["id", "email", "name"]
-      },
-      "LoginResponseDto": {
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string",
-            "example": "jwt-access-token-example"
-          },
-          "refreshToken": {
-            "type": "string",
-            "example": "jwt-refresh-token-example"
-          },
-          "user": {
-            "$ref": "#/components/schemas/UserResponseDto"
-          }
-        },
-        "required": ["accessToken", "refreshToken", "user"]
-      },
-      "RefreshResponseDto": {
-        "type": "object",
-        "properties": {
-          "accessToken": {
-            "type": "string",
-            "example": "jwt-access-token-example"
-          }
-        },
-        "required": ["accessToken"]
-      },
-      "MeResponseDto": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "example": "JWT works"
-          },
-          "user": {
-            "type": "object",
-            "example": {
-              "userId": 1,
-              "email": "test@test.com"
-            }
-          }
-        },
-        "required": ["message", "user"]
       }
     }
   }

@@ -14,6 +14,9 @@ export interface LearningTodoItemDto {
   reason?: string;
   /** The target date for the task */
   dueDate?: string;
-  /** Deadline type (SHORT_TERM or LONG_TERM) */
+  /**
+   * Deadline type (SHORT_TERM or LONG_TERM)
+   * @nullable
+   */
   deadlineType?: LearningTodoItemDtoDeadlineType;
 }

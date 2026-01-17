@@ -12,22 +12,17 @@ import type {
 } from 'axios';
 
 import type {
-  AuthControllerRefreshBody,
   LoginDto,
-  LoginResponseDto,
-  MeResponseDto,
-  RefreshResponseDto,
-  SignupDto,
-  UserResponseDto
+  SignupDto
 } from '../../../models/generated';
 
 
 
 
   /**
- * @summary Register a new user
+ * @summary User Signup
  */
-export const authControllerSignup = <TData = AxiosResponse<UserResponseDto>>(
+export const authControllerSignup = <TData = AxiosResponse<void>>(
     signupDto: SignupDto, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
@@ -36,9 +31,9 @@ export const authControllerSignup = <TData = AxiosResponse<UserResponseDto>>(
     );
   }
 /**
- * @summary Login with local strategy
+ * @summary User Login
  */
-export const authControllerLogin = <TData = AxiosResponse<LoginResponseDto>>(
+export const authControllerLogin = <TData = AxiosResponse<void>>(
     loginDto: LoginDto, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
@@ -47,10 +42,10 @@ export const authControllerLogin = <TData = AxiosResponse<LoginResponseDto>>(
     );
   }
 /**
- * @summary Refresh access token
+ * @summary Refresh Access Token
  */
-export const authControllerRefresh = <TData = AxiosResponse<RefreshResponseDto>>(
-    authControllerRefreshBody: AuthControllerRefreshBody, options?: AxiosRequestConfig
+export const authControllerRefresh = <TData = AxiosResponse<void>>(
+    authControllerRefreshBody: unknown, options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.post(
       `/auth/refresh`,
@@ -58,16 +53,16 @@ export const authControllerRefresh = <TData = AxiosResponse<RefreshResponseDto>>
     );
   }
 /**
- * @summary Get current user profile (JWT verification test)
+ * @summary Get current user profile
  */
-export const authControllerGetMe = <TData = AxiosResponse<MeResponseDto>>(
+export const authControllerGetMe = <TData = AxiosResponse<void>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.get(
       `/auth/me`,options
     );
   }
-export type AuthControllerSignupResult = AxiosResponse<UserResponseDto>
-export type AuthControllerLoginResult = AxiosResponse<LoginResponseDto>
-export type AuthControllerRefreshResult = AxiosResponse<RefreshResponseDto>
-export type AuthControllerGetMeResult = AxiosResponse<MeResponseDto>
+export type AuthControllerSignupResult = AxiosResponse<void>
+export type AuthControllerLoginResult = AxiosResponse<void>
+export type AuthControllerRefreshResult = AxiosResponse<void>
+export type AuthControllerGetMeResult = AxiosResponse<void>
