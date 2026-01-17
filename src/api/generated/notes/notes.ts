@@ -61,6 +61,7 @@ export const notesControllerGetAnalysis = <TData = AxiosResponse<NoteAnalysisRes
     );
   }
 /**
+ * 노트 분석에서 제안된 할 일을 저장합니다. 이미 저장된 동일한 내용의 할 일은 제외되며, 저장 시 기본적으로 체크 상태(isChecked: true)로 설정됩니다.
  * @summary Save learning todos for a note
  */
 export const notesControllerSaveTodos = <TData = AxiosResponse<TodoResponseDto[]>>(

@@ -12,8 +12,10 @@ import { signupSchema, type SignupSchema } from '@/schema/auth.schema';
 import { useAuthStore } from '@/store/authStore';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function Signup() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const form = useForm<SignupSchema>({
     resolver: zodResolver(signupSchema),
@@ -40,6 +42,18 @@ export default function Signup() {
           email,
           password,
         });
+
+        queryClient.clear();
+
+        // 대시보드 데이터를 '비어있음' 상태로 미리 채워넣기 (스켈레톤 방지)
+        queryClient.setQueryData(['dashboard'], {
+          userId: user.id,
+          totalNotes: 0,
+          currentStreakDays: 0,
+          thisMonthNotes: 0,
+          activity: [],
+        });
+
         setAuth(accessToken, refreshToken);
         setUser(user);
         navigate('/', { replace: true });
@@ -70,42 +84,50 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/30 p-4">
-      <Card className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-white p-4">
+      <Card className="w-full max-w-md border-slate-200 shadow-lg bg-white">
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <CardHeader>
-            <CardTitle className="text-center text-2xl">회원가입</CardTitle>
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-center text-2xl font-bold text-slate-900">
+              회원가입
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="username">이름</FieldLabel>
-                <InputGroup>
+                <FieldLabel htmlFor="username" className="text-base font-medium">
+                  이름
+                </FieldLabel>
+                <InputGroup className="h-11">
                   <InputGroupInput
                     id="username"
                     type="text"
                     placeholder="이름을 입력해 주세요."
                     aria-invalid={!!form.formState.errors.name}
                     {...form.register('name')}
+                    className="h-11 text-base placeholder:text-sm"
                   />
                   <InputGroupAddon>
-                    <UserIcon className="text-muted-foreground" />
+                    <UserIcon className="text-slate-400" />
                   </InputGroupAddon>
                 </InputGroup>
                 {form.formState.errors.name && <FieldError errors={[form.formState.errors.name]} />}
               </Field>
               <Field>
-                <FieldLabel htmlFor="email">이메일</FieldLabel>
-                <InputGroup>
+                <FieldLabel htmlFor="email" className="text-base font-medium">
+                  이메일
+                </FieldLabel>
+                <InputGroup className="h-11">
                   <InputGroupInput
                     id="email"
                     type="email"
                     placeholder="이메일을 입력해 주세요."
                     aria-invalid={!!form.formState.errors.email}
                     {...form.register('email')}
+                    className="h-11 text-base placeholder:text-sm"
                   />
                   <InputGroupAddon>
-                    <MailIcon className="text-muted-foreground" />
+                    <MailIcon className="text-slate-400" />
                   </InputGroupAddon>
                 </InputGroup>
                 {form.formState.errors.email && (
@@ -113,17 +135,20 @@ export default function Signup() {
                 )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="password">비밀번호</FieldLabel>
-                <InputGroup>
+                <FieldLabel htmlFor="password" className="text-base font-medium">
+                  비밀번호
+                </FieldLabel>
+                <InputGroup className="h-11">
                   <InputGroupInput
                     id="password"
                     type="password"
                     placeholder="8자 이상 입력해 주세요."
                     aria-invalid={!!form.formState.errors.password}
                     {...form.register('password')}
+                    className="h-11 text-base placeholder:text-sm"
                   />
                   <InputGroupAddon>
-                    <LockIcon className="text-muted-foreground" />
+                    <LockIcon className="text-slate-400" />
                   </InputGroupAddon>
                 </InputGroup>
                 {form.formState.errors.password && (
@@ -131,17 +156,20 @@ export default function Signup() {
                 )}
               </Field>
               <Field>
-                <FieldLabel htmlFor="passwordConfirm">비밀번호 확인</FieldLabel>
-                <InputGroup>
+                <FieldLabel htmlFor="passwordConfirm" className="text-base font-medium">
+                  비밀번호 확인
+                </FieldLabel>
+                <InputGroup className="h-11">
                   <InputGroupInput
                     id="passwordConfirm"
                     type="password"
                     placeholder="비밀번호를 확인해 주세요."
                     aria-invalid={!!form.formState.errors.passwordConfirm}
                     {...form.register('passwordConfirm')}
+                    className="h-11 text-base placeholder:text-sm"
                   />
                   <InputGroupAddon>
-                    <LockIcon className="text-muted-foreground" />
+                    <LockIcon className="text-slate-400" />
                   </InputGroupAddon>
                 </InputGroup>
                 {form.formState.errors.passwordConfirm && (
@@ -150,8 +178,12 @@ export default function Signup() {
               </Field>
             </FieldGroup>
           </CardContent>
-          <CardFooter className="flex flex-col gap-4 mt-6">
-            <Button type="submit" className="w-full cursor-pointer">
+          <CardFooter className="flex flex-col gap-4 mt-8">
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full cursor-pointer text-base font-semibold shadow-md"
+            >
               회원가입
             </Button>
             <p className="flex items-center justify-between text-sm">

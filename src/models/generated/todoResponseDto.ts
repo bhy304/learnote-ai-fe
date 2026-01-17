@@ -28,4 +28,5 @@ export interface TodoResponseDto {
    */
   deadlineType: TodoResponseDtoDeadlineType;
   createdAt: string;
+  isChecked: boolean;
 }

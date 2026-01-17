@@ -15,7 +15,6 @@ import type {
   AuthControllerRefreshBody,
   LoginDto,
   LoginResponseDto,
-  MeResponseDto,
   RefreshResponseDto,
   SignupDto,
   UserResponseDto
@@ -25,7 +24,7 @@ import type {
 
 
   /**
- * @summary Register a new user
+ * @summary User Signup
  */
 export const authControllerSignup = <TData = AxiosResponse<UserResponseDto>>(
     signupDto: SignupDto, options?: AxiosRequestConfig
@@ -36,7 +35,7 @@ export const authControllerSignup = <TData = AxiosResponse<UserResponseDto>>(
     );
   }
 /**
- * @summary Login with local strategy
+ * @summary User Login
  */
 export const authControllerLogin = <TData = AxiosResponse<LoginResponseDto>>(
     loginDto: LoginDto, options?: AxiosRequestConfig
@@ -47,7 +46,7 @@ export const authControllerLogin = <TData = AxiosResponse<LoginResponseDto>>(
     );
   }
 /**
- * @summary Refresh access token
+ * @summary Refresh Access Token
  */
 export const authControllerRefresh = <TData = AxiosResponse<RefreshResponseDto>>(
     authControllerRefreshBody: AuthControllerRefreshBody, options?: AxiosRequestConfig
@@ -58,9 +57,9 @@ export const authControllerRefresh = <TData = AxiosResponse<RefreshResponseDto>>
     );
   }
 /**
- * @summary Get current user profile (JWT verification test)
+ * @summary Get current user profile
  */
-export const authControllerGetMe = <TData = AxiosResponse<MeResponseDto>>(
+export const authControllerGetMe = <TData = AxiosResponse<UserResponseDto>>(
      options?: AxiosRequestConfig
  ): Promise<TData> => {
     return axios.default.get(
@@ -70,4 +69,4 @@ export const authControllerGetMe = <TData = AxiosResponse<MeResponseDto>>(
 export type AuthControllerSignupResult = AxiosResponse<UserResponseDto>
 export type AuthControllerLoginResult = AxiosResponse<LoginResponseDto>
 export type AuthControllerRefreshResult = AxiosResponse<RefreshResponseDto>
-export type AuthControllerGetMeResult = AxiosResponse<MeResponseDto>
+export type AuthControllerGetMeResult = AxiosResponse<UserResponseDto>

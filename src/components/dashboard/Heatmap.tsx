@@ -1,15 +1,14 @@
 import CalendarHeatmap from 'react-calendar-heatmap';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
-import type { Activity, DashboardResponse } from '@/types/dashboard.type';
+import type { ActivityItemDto, DashboardSummaryDto } from '@/models/generated';
+import { formatDate } from '@/lib/format';
 
 interface HeatmapProps {
-  dashboardData: DashboardResponse | undefined;
+  dashboardData: DashboardSummaryDto | undefined;
 }
 export default function Heatmap({ dashboardData }: HeatmapProps) {
-  const currentYear = new Date().getFullYear();
-  const startDate = new Date(currentYear - 1, 11, 31);
-  const endDate = new Date(currentYear, 11, 31);
+  const { startDate, endDate } = formatDate();
 
   return (
     <section className="w-full p-4 bg-white rounded-xl border">
@@ -19,12 +18,12 @@ export default function Heatmap({ dashboardData }: HeatmapProps) {
         values={dashboardData?.activity || []}
         gutterSize={0.8}
         classForValue={(value) => {
-          if (!value) return 'color-empty';
+          if (!value) return 'color-scale-0';
           return `color-scale-${value.level}`;
         }}
         showWeekdayLabels={true}
         tooltipDataAttrs={(value) => {
-          const activity = value as Activity | undefined;
+          const activity = value as ActivityItemDto | undefined;
           return {
             'data-tooltip-id': 'heatmap-tooltip',
             'data-tooltip-content':
@@ -33,7 +32,7 @@ export default function Heatmap({ dashboardData }: HeatmapProps) {
         }}
       />
       <Tooltip id="heatmap-tooltip" />
-      <div className="flex justify-end items-center gap-2 text-xs text-muted-foreground">
+      <div className="flex justify-end items-center gap-3 text-xs text-muted-foreground -mt-11">
         <span className="text-sm">Less</span>
         <div className="flex gap-1">
           <div className="w-4 h-4 rounded-[2px] bg-[#ebedf0]" />

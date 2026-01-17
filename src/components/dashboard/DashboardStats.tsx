@@ -1,29 +1,29 @@
-import type { DashboardResponse } from '@/types/dashboard.type';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { NotebookPen, CalendarFold, Flame } from 'lucide-react';
+import type { DashboardSummaryDto } from '@/models/generated';
 
 interface DashboardStatsProps {
-  data: DashboardResponse | undefined;
+  dashboardData: DashboardSummaryDto | undefined;
 }
 
-export default function DashboardStats({ data }: DashboardStatsProps) {
+export default function DashboardStats({ dashboardData }: DashboardStatsProps) {
   const stats = [
     {
-      title: 'Total Notes',
-      icon: <NotebookPen className="w-6 h-6 text-muted-foreground" />,
-      value: data?.totalNotes,
+      title: '전체 노트',
+      Icon: NotebookPen,
+      value: dashboardData?.totalNotes,
       unit: '개',
     },
     {
-      title: 'Learning Streak',
-      icon: <Flame className="w-6 h-6 text-muted-foreground" />,
-      value: data?.currentStreakDays,
+      title: '연속 학습일',
+      Icon: Flame,
+      value: dashboardData?.currentStreakDays,
       unit: '일',
     },
     {
-      title: 'This Month',
-      icon: <CalendarFold className="w-6 h-6 text-muted-foreground" />,
-      value: data?.thisMonthNotes,
+      title: '이번 달 노트',
+      Icon: CalendarFold,
+      value: dashboardData?.thisMonthNotes,
       unit: '개',
     },
   ];
@@ -31,17 +31,18 @@ export default function DashboardStats({ data }: DashboardStatsProps) {
   return (
     <section className="grid grid-cols-3 gap-6 mb-8">
       {stats.map((stat, index) => (
-        <Card key={index} className="hover:shadow-md transition-shadow">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardTitle className="text-xl font-medium text-muted-foreground font-poppins">
-              {stat.title}
-            </CardTitle>
-            {stat.icon}
+        <Card
+          key={index}
+          className="border border-slate-200 shadow-sm bg-white hover:shadow-md transition-all duration-200"
+        >
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-base font-semibold text-slate-600">{stat.title}</CardTitle>
+            <stat.Icon className="h-5 w-5 text-slate-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold flex items-baseline gap-1">
-              {stat.value}
-              <span className="text-sm font-normal text-muted-foreground">{stat.unit}</span>
+            <div className="flex items-baseline space-x-1">
+              <span className="text-4xl font-bold tracking-tight text-slate-900">{stat.value}</span>
+              <span className="text-lg text-slate-500 font-medium">{stat.unit}</span>
             </div>
           </CardContent>
         </Card>
