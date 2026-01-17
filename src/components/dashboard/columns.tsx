@@ -1,24 +1,16 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { type NoteListItemDto } from '@/models/generated';
 import { Link } from 'react-router-dom';
+import { NoteActionMenu } from './NoteActionMenu';
 
 export const columns: ColumnDef<NoteListItemDto>[] = [
-  // { accessorKey: 'id', header: 'ID' },
   {
     accessorKey: 'createdAt',
-    header: () => <div className="w-[120px] text-center">작성일</div>,
-    cell: ({ row }) => <div className="w-[120px] text-center">{row.getValue('createdAt')}</div>,
-    // header: ({ column }) => {
-    //   return (
-    //     <Button
-    //       variant="ghost"
-    //       onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-    //     >
-    //       생성일
-    //       <ArrowUpDown className="ml-2 h-4 w-4" />
-    //     </Button>
-    //   );
-    // },
+    header: () => <div className="text-center">작성일</div>,
+    cell: ({ row }) => <div className="text-center">{row.getValue('createdAt')}</div>,
+    meta: {
+      className: 'w-[200px]',
+    } as any,
   },
   {
     accessorKey: 'title',
@@ -34,5 +26,17 @@ export const columns: ColumnDef<NoteListItemDto>[] = [
         </div>
       );
     },
+  },
+  {
+    id: 'actions',
+    header: '',
+    cell: ({ row }) => (
+      <div className="flex justify-end p-0">
+        <NoteActionMenu note={row.original} />
+      </div>
+    ),
+    meta: {
+      className: 'w-[200px]',
+    } as any,
   },
 ];
