@@ -137,7 +137,7 @@ export default function NoteDetail() {
     },
   });
 
-  const { deleteNote, updateNote, isUpdating } = useNoteActions({
+  const { deleteNote, updateNote, isUpdating, isDeleting } = useNoteActions({
     onSuccessDelete: () => navigate('/'),
     onSuccessUpdate: () => setIsEditing(false),
   });
@@ -414,7 +414,7 @@ export default function NoteDetail() {
               open={isDeleteOpen}
               onOpenChange={setIsDeleteOpen}
               onConfirm={handleDeleteNote}
-              isDeleting={false}
+              isDeleting={isDeleting}
             />
           </div>
         </div>
