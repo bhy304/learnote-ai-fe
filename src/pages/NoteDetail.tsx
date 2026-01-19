@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,6 +21,7 @@ import {
   Trash2,
   Target,
   FileText,
+  ArrowUp,
 } from 'lucide-react';
 import AnalysisLoadingView from '@/components/AnalysisLoadingView';
 import { cn } from '@/lib/utils';
@@ -56,6 +57,21 @@ export default function NoteDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [showRawContent, setShowRawContent] = useState(true);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show button when scrolled more than 400px or near bottom
+      if (window.scrollY > 400) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const toggleSelect = (index: number) => {
     const newSet = new Set(selectedIndices);
@@ -718,15 +734,17 @@ export default function NoteDetail() {
           )} */}
         </div>
 
-        {/* <div className="pt-20 text-center pb-20">
+        {showScrollTop && (
           <Button
-            variant="ghost"
+            variant="default"
+            size="icon"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            className="text-slate-400 text-sm hover:text-slate-900 transition-colors uppercase tracking-widest font-bold cursor-pointer"
+            className="fixed bottom-8 right-8 size-12 rounded-full shadow-2xl bg-slate-900 hover:bg-slate-800 text-white transition-all duration-300 animate-in fade-in slide-in-from-bottom-4 cursor-pointer z-40"
+            aria-label="맨 위로 이동"
           >
-            맨 위로 돌아가기
+            <ArrowUp className="size-6" />
           </Button>
-        </div> */}
+        )}
       </main>
     </div>
   );
