@@ -33,8 +33,8 @@ export default function Overview() {
         <HeatmapSkeleton />
         <section className="space-y-6">
           <div className="flex items-center justify-between">
-            <Skeleton className="h-8 w-32" />
-            <Skeleton className="h-10 w-28 rounded-xl" />
+            <h2 className="text-2xl font-bold text-slate-800">학습 노트</h2>
+            <Skeleton className="h-9 w-28 rounded-md" />
           </div>
           <TableSkeleton />
         </section>

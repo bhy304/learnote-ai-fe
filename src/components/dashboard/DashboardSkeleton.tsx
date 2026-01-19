@@ -1,22 +1,22 @@
 import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 
 export function StatsSkeleton() {
   return (
     <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {[1, 2, 3].map((index) => (
-        <div
-          key={index}
-          className="h-[140px] rounded-2xl border border-slate-200 p-6 bg-white shadow-sm space-y-4"
-        >
-          <div className="flex justify-between items-center">
-            <Skeleton className="h-4 w-20 sm:h-5 sm:w-24" />
-            <Skeleton className="h-4 w-4 sm:h-5 sm:w-5 rounded-full" />
-          </div>
-          <div className="flex items-baseline space-x-1">
-            <Skeleton className="h-8 w-24 sm:h-10 sm:w-32" />
-            <Skeleton className="h-4 w-10 sm:h-6 sm:w-12" />
-          </div>
-        </div>
+        <Card key={index} className="border-slate-200 shadow-sm transition-all duration-200">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <Skeleton className="h-5 w-24" />
+            <Skeleton className="h-5 w-5 rounded-full" />
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-baseline space-x-1">
+              <Skeleton className="h-10 w-24" />
+              <Skeleton className="h-5 w-8" />
+            </div>
+          </CardContent>
+        </Card>
       ))}
     </section>
   );
@@ -24,92 +24,119 @@ export function StatsSkeleton() {
 
 export function HeatmapSkeleton() {
   return (
-    <div className="w-full bg-white rounded-xl border border-slate-200 p-4 pb-6 sm:pb-12">
-      <div className="flex justify-between items-center mb-6">
-        <Skeleton className="h-4 w-24" />
-        <Skeleton className="h-4 w-40" />
-      </div>
-      <Skeleton className="h-[120px] w-full rounded-lg" />
-    </div>
-  );
-}
-
-export function TableSkeleton() {
-  return (
-    <section className="space-y-4">
-      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
-        <div className="border-b border-slate-200 p-2 bg-slate-50/50">
-          <div className="flex gap-4">
-            <Skeleton className="h-10 w-[120px]" />
-            <Skeleton className="h-10 flex-1" />
-            <Skeleton className="h-10 w-[80px]" />
-          </div>
+    <section className="w-full p-4 bg-white rounded-xl border">
+      <div className="w-full overflow-x-auto overflow-y-hidden no-scrollbar pb-6 sm:pb-12">
+        <div className="min-w-[850px] h-[165px]">
+          <Skeleton className="w-full h-full rounded-md" />
         </div>
-        <div className="divide-y divide-slate-100">
+      </div>
+      <div className="flex justify-end items-center gap-2 md:gap-3 text-[10px] sm:text-xs text-muted-foreground">
+        <span className="font-medium">Less</span>
+        <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex gap-4 items-center p-2">
-              <Skeleton className="h-10 w-[120px]" />
-              <Skeleton className="h-10 flex-1" />
-              <div className="flex justify-end w-[80px]">
-                <Skeleton className="h-8 w-8 rounded-full" />
-              </div>
-            </div>
+            <Skeleton key={i} className="w-4 h-4 rounded-[2px]" />
           ))}
         </div>
+        <span className="font-medium">More</span>
       </div>
     </section>
   );
 }
 
+export function TableSkeleton() {
+  return (
+    <div className="w-full">
+      <div className="bg-white rounded-lg border overflow-hidden shadow-sm">
+        {/* Header Skeleton */}
+        <div className="border-b bg-muted/50 h-10 flex items-center">
+          <div className="flex w-full">
+            <div className="w-[120px] flex justify-center">
+              <Skeleton className="h-4 w-16" />
+            </div>
+            <div className="flex-1 px-2">
+              <Skeleton className="h-4 w-12" />
+            </div>
+            <div className="w-[80px]" />
+          </div>
+        </div>
+        {/* Rows Skeleton */}
+        <div className="divide-y">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center h-[49px]">
+              <div className="w-[120px] flex justify-center">
+                <Skeleton className="h-4 w-20" />
+              </div>
+              <div className="flex-1 px-2">
+                <Skeleton className="h-4 w-3/4 max-w-[400px]" />
+              </div>
+              <div className="w-[80px] flex justify-end pr-3">
+                <Skeleton className="h-8 w-8 rounded-md" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Pagination Skeleton */}
+      <div className="flex items-center justify-center py-3 px-2 gap-8">
+        <Skeleton className="h-4 w-24" />
+        <div className="flex gap-1">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="size-9 rounded-md" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function KanbanSkeleton() {
   return (
-    <div className="flex flex-col md:flex-row gap-6 h-full min-h-[500px] animate-in fade-in duration-500">
+    <div className="flex flex-col md:flex-row gap-6 h-full min-h-[500px]">
       {/* Pending Column Skeleton */}
-      <div className="flex flex-col flex-1 w-full md:min-w-[300px] rounded-2xl border border-blue-100/50 bg-blue-50/30 p-4 space-y-6">
-        <div className="flex items-center justify-between px-2">
+      <div className="flex flex-col flex-1 w-full md:min-w-[300px] min-h-[400px] rounded-2xl border bg-blue-50/30 border-blue-100/50 p-4">
+        <div className="flex items-center justify-between mb-6 px-2">
           <div className="flex items-center gap-2">
             <div className="size-1.5 rounded-full bg-blue-500" />
             <Skeleton className="h-4 w-20" />
             <Skeleton className="h-5 w-6 rounded-md" />
           </div>
         </div>
-        <div className="space-y-3 p-2">
+        <div className="flex flex-col gap-3 p-2">
           {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-3 items-center"
-            >
-              <Skeleton className="size-5 rounded" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-5 w-3/4" />
-                <Skeleton className="h-3.5 w-1/2" />
-              </div>
-            </div>
+            <Card key={i} className="py-2">
+              <CardContent className="p-2 flex gap-3 items-center">
+                <div className="w-4 shrink-0" /> {/* Grip icon space */}
+                <Skeleton className="size-4 rounded" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>
 
       {/* Completed Column Skeleton */}
-      <div className="flex flex-col flex-1 w-full md:min-w-[300px] rounded-2xl border border-emerald-100/50 bg-emerald-50/30 p-4 space-y-6">
-        <div className="flex items-center justify-between px-2">
+      <div className="flex flex-col flex-1 w-full md:min-w-[300px] min-h-[400px] rounded-2xl border bg-emerald-50/30 border-emerald-100/50 p-4">
+        <div className="flex items-center justify-between mb-6 px-2">
           <div className="flex items-center gap-2">
             <div className="size-1.5 rounded-full bg-emerald-500" />
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-5 w-6 rounded-md" />
           </div>
         </div>
-        <div className="space-y-3 p-2">
+        <div className="flex flex-col gap-3 p-2">
           {[1, 2].map((i) => (
-            <div
-              key={i}
-              className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-3 items-center"
-            >
-              <Skeleton className="size-5 rounded" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-5 w-2/3" />
-                <Skeleton className="h-3.5 w-1/3 opacity-50" />
-              </div>
-            </div>
+            <Card key={i} className="py-2">
+              <CardContent className="p-2 flex gap-3 items-center">
+                <div className="w-4 shrink-0" /> {/* Grip icon space */}
+                <Skeleton className="size-4 rounded" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-2/3" />
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>

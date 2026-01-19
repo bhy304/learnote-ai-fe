@@ -93,7 +93,7 @@ export function DataTable<TData, TValue>({
                       <TableCell
                         key={cell.id}
                         className={cn(
-                          'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 ml-2',
+                          'p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0',
                           (cell.column.columnDef.meta as any)?.className,
                         )}
                       >
@@ -114,13 +114,12 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       {pageCount > 1 && (
-        <div className="flex items-center justify-center py-6 px-2 gap-8">
+        <div className="flex items-center justify-center py-3 px-2 gap-8">
           {/* 페이지 정보 */}
           <div className="text-sm font-medium text-slate-500 whitespace-nowrap">
             Page <span className="text-slate-900">{pageIndex + 1}</span> of{' '}
             <span className="text-slate-900">{pageCount}</span>
           </div>
-
           {/* 네비게이션 버튼 그룹 */}
           <Pagination className="w-auto mx-0">
             <PaginationContent className="gap-1">

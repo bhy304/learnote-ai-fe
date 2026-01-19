@@ -30,7 +30,7 @@ export default function Dashboard() {
           <div className="flex-1 overflow-y-auto overflow-x-hidden">
             <div
               className={cn(
-                'container mx-auto px-4 md:px-8 max-w-[1280px] min-h-full flex flex-col pt-16 pb-8 animate-in fade-in duration-700',
+                'container mx-auto px-4 md:px-8 max-w-[1280px] flex flex-col pt-16 pb-8 animate-in fade-in duration-700',
               )}
             >
               {activeView === 'dashboard' ? (

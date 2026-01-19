@@ -164,93 +164,119 @@ export default function NoteDetail() {
     }
     return (
       <div className="relative min-h-screen bg-white">
-        <main className="container mx-auto py-12 px-6 max-w-[1000px] space-y-12">
-          {/* Header Skeleton */}
-          <div className="flex items-center justify-between">
-            <Skeleton className="h-10 w-24" />
+        {/* Sticky Header Skeleton */}
+        <div className="sticky top-0 z-30 w-full bg-white py-6 border-b border-transparent">
+          <div className="container mx-auto px-6 max-w-[1000px] flex items-center justify-between">
+            <div className="flex items-center gap-2 -ml-2">
+              <Skeleton className="size-4" />
+              <Skeleton className="h-4 w-16" />
+            </div>
             <div className="flex gap-3">
-              <Skeleton className="h-10 w-24" />
-              <Skeleton className="h-10 w-24" />
-              <Skeleton className="h-10 w-24" />
+              <Skeleton className="h-10 w-24 rounded-md" />
+              <Skeleton className="h-10 w-24 rounded-md" />
+              <Skeleton className="h-10 w-24 rounded-md" />
             </div>
           </div>
+        </div>
 
+        <main className="container mx-auto pb-24 px-6 max-w-[1000px] space-y-12 animate-in fade-in pt-6">
           {/* Title Skeleton */}
           <div className="space-y-4">
             <Skeleton className="h-12 w-3/4" />
           </div>
 
-          <div className="space-y-20">
-            <div className="space-y-16">
-              {/* 1. 핵심 요약 Skeleton */}
-              <section className="space-y-6">
-                <div className="flex items-center gap-2.5">
-                  <Skeleton className="size-8 rounded-lg" />
-                  <Skeleton className="h-7 w-24" />
-                </div>
-                <Skeleton className="h-8 w-full" />
-              </section>
+          <div className="grid gap-12 grid-cols-1">
+            <div className="space-y-20">
+              <div className="space-y-16">
+                {/* 1. 핵심 요약 Skeleton */}
+                <section className="space-y-6">
+                  <div className="flex items-center gap-2.5">
+                    <Skeleton className="size-8 rounded-lg" />
+                    <Skeleton className="h-7 w-24" />
+                  </div>
+                  <Skeleton className="h-8 w-full" />
+                </section>
 
-              {/* 2. 학습 키워드 Skeleton */}
-              <section className="space-y-6">
-                <div className="flex items-center gap-2.5">
-                  <Skeleton className="size-8 rounded-lg" />
-                  <Skeleton className="h-7 w-24" />
-                </div>
-                <div className="flex gap-2">
-                  <Skeleton className="h-8 w-20 rounded-full" />
-                  <Skeleton className="h-8 w-24 rounded-full" />
-                  <Skeleton className="h-8 w-16 rounded-full" />
-                </div>
-              </section>
+                {/* 2. 학습 키워드 Skeleton */}
+                <section className="space-y-6">
+                  <div className="flex items-center gap-2.5">
+                    <Skeleton className="size-8 rounded-lg" />
+                    <Skeleton className="h-7 w-24" />
+                  </div>
+                  <div className="flex gap-2">
+                    <Skeleton className="h-8 w-20 rounded-full" />
+                    <Skeleton className="h-8 w-24 rounded-full" />
+                    <Skeleton className="h-8 w-16 rounded-full" />
+                  </div>
+                </section>
 
-              {/* 3. 팩트 체크 Skeleton */}
-              <section className="space-y-8">
-                <div className="flex items-center gap-2.5">
-                  <Skeleton className="size-8 rounded-lg" />
-                  <Skeleton className="h-7 w-24" />
-                </div>
+                {/* 3. 팩트 체크 Skeleton */}
+                <section className="space-y-8">
+                  <div className="flex items-center gap-2.5">
+                    <Skeleton className="size-8 rounded-lg" />
+                    <Skeleton className="h-7 w-24" />
+                  </div>
+                  <div className="space-y-6">
+                    {[1, 2].map((i) => (
+                      <div key={i} className="pl-6 border-l-2 border-slate-100 space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Skeleton className="h-5 w-16" />
+                          <Skeleton className="h-6 w-1/2" />
+                        </div>
+                        <Skeleton className="h-20 w-full rounded-xl" />
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                {/* 4. 다음 학습 추천 Skeleton */}
+                <section className="space-y-8">
+                  <div className="flex items-center gap-2.5">
+                    <Skeleton className="size-8 rounded-lg" />
+                    <Skeleton className="h-7 w-32" />
+                  </div>
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <div key={i} className="p-6 rounded-xl border border-slate-100 flex gap-4">
+                        <Skeleton className="size-6 rounded-full shrink-0" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-5 w-3/4" />
+                          <Skeleton className="h-4 w-full" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                {/* 5. 원본 내용 Skeleton */}
                 <div className="space-y-6">
-                  {[1, 2].map((i) => (
-                    <div key={i} className="pl-6 border-l-2 border-slate-100 space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Skeleton className="h-5 w-16" />
-                        <Skeleton className="h-6 w-1/2" />
-                      </div>
-                      <Skeleton className="h-20 w-full rounded-xl" />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <Skeleton className="size-8 rounded-lg" />
+                      <Skeleton className="h-7 w-24" />
                     </div>
-                  ))}
+                    <Skeleton className="h-9 w-20 rounded-md" />
+                  </div>
+                  <Skeleton className="h-24 w-full rounded-xl" />
                 </div>
-              </section>
 
-              {/* 4. 다음 학습 추천 Skeleton */}
-              <section className="space-y-8">
-                <div className="flex items-center gap-2.5">
-                  <Skeleton className="size-8 rounded-lg" />
-                  <Skeleton className="h-7 w-32" />
-                </div>
-                <div className="space-y-4">
-                  {[1, 2, 3].map((i) => (
-                    <div key={i} className="p-6 rounded-xl border border-slate-100 flex gap-4">
-                      <Skeleton className="size-6 rounded-full shrink-0" />
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-5 w-3/4" />
-                        <Skeleton className="h-4 w-full" />
-                      </div>
+                {/* 6. 나의 학습 노트 Skeleton */}
+                <section className="space-y-6">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="size-8 rounded-lg" />
+                    <Skeleton className="h-7 w-32" />
+                    <Skeleton className="h-5 w-16 rounded-full" />
+                  </div>
+                  <div className="p-6 border border-slate-100 rounded-3xl flex gap-4">
+                    <Skeleton className="size-5 shrink-0 mt-0.5" />
+                    <div className="space-y-2 flex-1">
+                      <Skeleton className="h-5 w-24" />
+                      <Skeleton className="h-12 w-full" />
                     </div>
-                  ))}
-                </div>
-              </section>
-
-              {/* 6. 나의 학습 노트 Skeleton */}
-              <section className="space-y-6">
-                <div className="flex items-center gap-2">
-                  <Skeleton className="size-8 rounded-lg" />
-                  <Skeleton className="h-7 w-32" />
-                </div>
-                <Skeleton className="h-32 w-full rounded-3xl" />
-                <Skeleton className="h-[400px] w-full rounded-xl" />
-              </section>
+                  </div>
+                  <Skeleton className="h-[400px] w-full rounded-xl border-2" />
+                </section>
+              </div>
             </div>
           </div>
         </main>
