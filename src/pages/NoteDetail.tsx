@@ -57,7 +57,7 @@ export default function NoteDetail() {
   const isAnalyzing = note?.status === 'ANALYZING';
 
   // [수정] 생성 경로를 통한 진입인지 여부를 상태로 관리하고, 새로고침 시에는 초기화되도록 처리합니다.
-  const [isInitialCreate, setIsInitialCreate] = useState(() => !!location.state?.fromCreate);
+  const [isInitialCreate] = useState(() => !!location.state?.fromCreate);
 
   useEffect(() => {
     // 처음 한 번만 생성 플래그를 확인하고, 브라우저 히스토리 상태를 비워 새로고침 시에는 적용되지 않게 합니다.
