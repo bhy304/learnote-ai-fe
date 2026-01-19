@@ -288,8 +288,14 @@ export default function NoteDetail() {
 
   return (
     <div className="relative min-h-screen bg-white">
-      <main className="container mx-auto py-12 px-6 max-w-[1000px] space-y-12 animate-in fade-in">
-        <div className="flex items-center justify-between">
+      {/* Sticky Header 영역 */}
+      <div
+        className={cn(
+          'sticky top-0 z-30 w-full transition-all duration-200 border-b border-transparent',
+          showScrollTop ? 'bg-white/80 backdrop-blur-md border-slate-200 py-3' : 'bg-white py-6',
+        )}
+      >
+        <div className="container mx-auto px-6 max-w-[1000px] flex items-center justify-between">
           <Button
             variant="ghost"
             onClick={() => navigate('/')}
@@ -358,6 +364,9 @@ export default function NoteDetail() {
             />
           </div>
         </div>
+      </div>
+
+      <main className="container mx-auto pb-24 px-6 max-w-[1000px] space-y-12 animate-in fade-in pt-6">
         {/* 헤더: 제목 */}
         <div className="space-y-4">
           {/* <div className="flex items-center gap-2 text-slate-400 text-sm">
