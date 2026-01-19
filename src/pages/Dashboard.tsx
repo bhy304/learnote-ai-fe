@@ -23,10 +23,10 @@ export default function Dashboard() {
   const isFirstTimeUser = !isLoading && dashboardData?.totalNotes === 0;
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={true} className="h-full">
       <div className="flex h-full w-full overflow-hidden bg-white">
         <DashboardSidebar activeView={activeView} onToggleView={handleToggleView} />
-        <main className="flex-1 h-screen overflow-hidden bg-white transition-all flex flex-col">
+        <main className="flex-1 h-full overflow-hidden bg-white transition-all flex flex-col relative">
           <div className="flex-1 overflow-y-auto overflow-x-hidden">
             <div
               className={cn(
