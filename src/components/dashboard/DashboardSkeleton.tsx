@@ -2,23 +2,35 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 export function StatsSkeleton() {
   return (
-    <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {[1, 2, 3].map((index) => (
         <div
           key={index}
           className="h-[140px] rounded-2xl border border-slate-200 p-6 bg-white shadow-sm space-y-4"
         >
           <div className="flex justify-between items-center">
-            <Skeleton className="h-5 w-24" />
-            <Skeleton className="h-5 w-5 rounded-full" />
+            <Skeleton className="h-4 w-20 sm:h-5 sm:w-24" />
+            <Skeleton className="h-4 w-4 sm:h-5 sm:w-5 rounded-full" />
           </div>
           <div className="flex items-baseline space-x-1">
-            <Skeleton className="h-10 w-16" />
-            <Skeleton className="h-6 w-8" />
+            <Skeleton className="h-8 w-12 sm:h-10 sm:w-16" />
+            <Skeleton className="h-4 w-6 sm:h-6 sm:w-8" />
           </div>
         </div>
       ))}
     </section>
+  );
+}
+
+export function HeatmapSkeleton() {
+  return (
+    <div className="w-full bg-white rounded-xl border border-slate-200 p-4 pb-12">
+      <div className="flex justify-between items-center mb-6">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-40" />
+      </div>
+      <Skeleton className="h-[120px] w-full rounded-lg" />
+    </div>
   );
 }
 
@@ -27,11 +39,10 @@ export function TableSkeleton() {
     <section className="space-y-4">
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="border-b border-slate-100 p-4 bg-slate-50/30">
-          <div className="grid grid-cols-4 gap-4">
-            <Skeleton className="h-4 w-20" />
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-4 w-16" />
-            <Skeleton className="h-4 w-12" />
+          <div className="flex gap-4">
+            <Skeleton className="h-4 w-[120px]" />
+            <Skeleton className="h-4 flex-1" />
+            <Skeleton className="h-4 w-[40px] ml-auto" />
           </div>
         </div>
         <div className="p-4 space-y-4">
@@ -40,10 +51,9 @@ export function TableSkeleton() {
               key={i}
               className="flex gap-4 items-center py-3 border-b border-slate-50 last:border-0"
             >
-              <Skeleton className="h-6 w-32" />
-              <Skeleton className="h-6 flex-1" />
-              <Skeleton className="h-6 w-20" />
-              <Skeleton className="h-8 w-8 rounded-full" />
+              <Skeleton className="h-5 w-[120px]" />
+              <Skeleton className="h-5 flex-1" />
+              <Skeleton className="h-6 w-6 rounded-full ml-auto" />
             </div>
           ))}
         </div>

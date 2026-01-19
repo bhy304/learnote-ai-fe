@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { DataTable } from '@/components/common/DataTable';
-import { TableSkeleton, StatsSkeleton } from '@/components/dashboard/DashboardSkeleton';
+import {
+  TableSkeleton,
+  StatsSkeleton,
+  HeatmapSkeleton,
+} from '@/components/dashboard/DashboardSkeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDashboard } from '@/hooks/useDashboard';
 import DashboardStats from './DashboardStats';
@@ -24,9 +28,9 @@ export default function Overview() {
 
   if (isDashboardLoading) {
     return (
-      <>
+      <div className="space-y-8 md:space-y-10">
         <StatsSkeleton />
-        <Skeleton className="h-[200px] w-full rounded-2xl mb-12" />
+        <HeatmapSkeleton />
         <section className="space-y-6">
           <div className="flex items-center justify-between">
             <Skeleton className="h-8 w-32" />
@@ -34,7 +38,7 @@ export default function Overview() {
           </div>
           <TableSkeleton />
         </section>
-      </>
+      </div>
     );
   }
 

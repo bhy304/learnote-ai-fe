@@ -120,6 +120,12 @@
   }
   body {
     @apply bg-background text-foreground;
+    height: 100%;
+    overflow: hidden;
+  }
+  html,
+  #root {
+    height: 100%;
   }
   /* react-calendar-heatmap */
   .react-calendar-heatmap {

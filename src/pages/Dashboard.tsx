@@ -24,13 +24,13 @@ export default function Dashboard() {
 
   return (
     <SidebarProvider defaultOpen={true}>
-      <div className="flex h-screen w-full overflow-hidden bg-white">
+      <div className="flex h-full w-full overflow-hidden bg-white">
         <DashboardSidebar activeView={activeView} onToggleView={handleToggleView} />
         <main className="flex-1 h-screen overflow-hidden bg-white transition-all flex flex-col">
-          <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden">
             <div
               className={cn(
-                'container mx-auto px-4 md:px-8 max-w-[1280px] min-h-full flex flex-col pt-8 md:pt-16 pb-16 animate-in fade-in duration-700',
+                'container mx-auto px-4 md:px-8 max-w-[1280px] min-h-full flex flex-col pt-8 md:pt-16 pb-8 animate-in fade-in duration-700',
               )}
             >
               {activeView === 'dashboard' ? (
@@ -39,7 +39,7 @@ export default function Dashboard() {
                     <EmptyDashboard userName={user?.name || ''} />
                   </div>
                 ) : (
-                  <div className="space-y-12">
+                  <div className="space-y-6 md:space-y-8">
                     <Overview />
                   </div>
                 )
