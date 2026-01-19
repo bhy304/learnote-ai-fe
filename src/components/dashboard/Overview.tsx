@@ -26,7 +26,10 @@ export default function Overview() {
     pageSize: PAGE_SIZE,
   });
 
-  if (isDashboardLoading) {
+  // 통합 초기 로딩 상태: 대시보드 요약이나 첫 노트 목록 중 하나라도 로딩 중이면 전체 스켈레톤 유지
+  const isInitialCombinedLoading = isDashboardLoading || (isNotesLoading && !notes);
+
+  if (isInitialCombinedLoading) {
     return (
       <div className="space-y-4 md:space-y-6">
         <StatsSkeleton />

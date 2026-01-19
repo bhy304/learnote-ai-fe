@@ -28,6 +28,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FieldError } from '@/components/ui/field';
+import { Spinner } from '@/components/ui/spinner';
 import notesAPI from '@/api/notes.api';
 import { useQueryClient } from '@tanstack/react-query';
 import type {
@@ -53,8 +54,17 @@ export default function NoteDetail() {
   const queryClient = useQueryClient();
 
   const { data: note, isLoading } = useNote(id || null);
-  const isFromCreate = location.state?.fromCreate;
   const isAnalyzing = note?.status === 'ANALYZING';
+
+  // [수정] 생성 경로를 통한 진입인지 여부를 상태로 관리하고, 새로고침 시에는 초기화되도록 처리합니다.
+  const [isInitialCreate, setIsInitialCreate] = useState(() => !!location.state?.fromCreate);
+
+  useEffect(() => {
+    // 처음 한 번만 생성 플래그를 확인하고, 브라우저 히스토리 상태를 비워 새로고침 시에는 적용되지 않게 합니다.
+    if (location.state?.fromCreate) {
+      window.history.replaceState({}, document.title);
+    }
+  }, []);
 
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedIndices, setSelectedIndices] = useState<Set<number>>(new Set());
@@ -62,6 +72,7 @@ export default function NoteDetail() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [showRawContent, setShowRawContent] = useState(true);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isCreatingTodo, setIsCreatingTodo] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -103,6 +114,7 @@ export default function NoteDetail() {
       };
     });
 
+    setIsCreatingTodo(true);
     try {
       await notesAPI.saveLearningTodos(id!, { todos: selectedTodos });
       toast.success(`${selectedIndices.size}개의 할 일이 생성되었습니다.`);
@@ -111,9 +123,8 @@ export default function NoteDetail() {
       setSelectedIndices(new Set());
 
       queryClient.invalidateQueries({ queryKey: ['noteAnalysis', id] });
-    } catch (error) {
-      console.error(error);
-      toast.error('할 일 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsCreatingTodo(false);
     }
   };
 
@@ -158,10 +169,14 @@ export default function NoteDetail() {
     await deleteNote(id);
   };
 
-  if (isLoading) {
-    if (isFromCreate) {
+  // [수정] 로딩 또는 분석 중일 때의 화면 결정
+  if (isLoading || isAnalyzing) {
+    // 생성 경로로 들어온 최초 로딩 시에만 전용 로딩 뷰를 보여줍니다.
+    if (isInitialCreate) {
       return <AnalysisLoadingView />;
     }
+
+    // 그 외(새로고침, 대시보드 진입 등)에는 스켈레톤을 보여줍니다.
     return (
       <div className="relative min-h-screen bg-white">
         {/* Sticky Header Skeleton */}
@@ -284,10 +299,6 @@ export default function NoteDetail() {
     );
   }
 
-  if (isAnalyzing) {
-    return <AnalysisLoadingView />;
-  }
-
   if (!note) {
     return (
       <main className="container mx-auto py-20 px-4 text-center">
@@ -346,18 +357,35 @@ export default function NoteDetail() {
 
             {isEditing ? (
               <>
-                <Button variant="ghost" className="px-4 cursor-pointer" onClick={cancelEditing}>
+                <Button
+                  variant="ghost"
+                  className="px-4 cursor-pointer"
+                  onClick={cancelEditing}
+                  disabled={isUpdating}
+                >
                   <X className="size-4 mr-2" />
                   취소
                 </Button>
                 <Button
                   variant="default"
-                  className="px-4 cursor-pointer"
+                  className="relative px-4 cursor-pointer overflow-hidden"
                   onClick={handleSubmit(handleUpdateNote)}
                   disabled={isUpdating}
                 >
-                  <Save className="size-4 mr-2" />
-                  {isUpdating ? '저장 중...' : '저장'}
+                  <div
+                    className={cn(
+                      'flex items-center justify-center transition-opacity',
+                      isUpdating && 'opacity-0',
+                    )}
+                  >
+                    <Save className="size-4 mr-2" />
+                    저장
+                  </div>
+                  {isUpdating && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Spinner className="text-white" />
+                    </div>
+                  )}
                 </Button>
               </>
             ) : (
@@ -516,7 +544,7 @@ export default function NoteDetail() {
                 {/* 4. 다음 학습 추천 (할 일) */}
                 {suggestedTodos.length > 0 && (
                   <section
-                    className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700"
+                    className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 scroll-mt-32"
                     id="suggestedTodos"
                   >
                     <div className="flex items-center gap-2.5">
@@ -529,12 +557,23 @@ export default function NoteDetail() {
                           <Button
                             variant="default"
                             onClick={handleCreateTodos}
-                            className="h-8 shadow-sm"
+                            className="relative h-8 shadow-sm overflow-hidden"
+                            disabled={isCreatingTodo}
                           >
-                            {selectedIndices.size}개 추가
+                            <span
+                              className={cn('transition-opacity', isCreatingTodo && 'opacity-0')}
+                            >
+                              {selectedIndices.size}개 추가
+                            </span>
+                            {isCreatingTodo && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <Spinner className="text-white size-3" />
+                              </div>
+                            )}
                           </Button>
                           <Button
                             variant="ghost"
+                            disabled={isCreatingTodo}
                             onClick={() => {
                               setIsSelectionMode(false);
                               setSelectedIndices(new Set());
@@ -584,7 +623,7 @@ export default function NoteDetail() {
                                   onClick={(e) => e.stopPropagation()}
                                 >
                                   <Checkbox
-                                    checked={selectedIndices.has(i)}
+                                    checked={isCreated || selectedIndices.has(i)}
                                     onCheckedChange={() => toggleSelect(i)}
                                     disabled={isCreated}
                                     className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
@@ -768,7 +807,6 @@ export default function NoteDetail() {
             </div>
           )} */}
         </div>
-
         {showScrollTop && (
           <Button
             variant="default"

@@ -10,6 +10,7 @@ import { Lightbulb, X, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { FieldError } from '@/components/ui/field';
+import AnalysisLoadingView from '@/components/AnalysisLoadingView';
 
 export default function CreateNote() {
   const navigate = useNavigate();
@@ -43,6 +44,10 @@ export default function CreateNote() {
       setIsSubmitting(false);
     }
   };
+
+  if (isSubmitting) {
+    return <AnalysisLoadingView />;
+  }
 
   return (
     <main className="container mx-auto py-12 px-6 max-w-[1000px] min-h-screen bg-white space-y-12">
@@ -104,7 +109,7 @@ export default function CreateNote() {
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4">
+          <div className="flex justify-end gap-3">
             <Button
               type="button"
               variant="outline"

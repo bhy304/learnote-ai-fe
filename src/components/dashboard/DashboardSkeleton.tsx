@@ -13,7 +13,6 @@ export function StatsSkeleton() {
           <CardContent>
             <div className="flex items-baseline space-x-1">
               <Skeleton className="h-10 w-24" />
-              <Skeleton className="h-5 w-8" />
             </div>
           </CardContent>
         </Card>
@@ -24,7 +23,7 @@ export function StatsSkeleton() {
 
 export function HeatmapSkeleton() {
   return (
-    <section className="w-full p-4 bg-white rounded-xl border">
+    <section className="w-full p-4 bg-white rounded-xl border animate-in fade-in duration-500">
       <div className="w-full overflow-x-auto overflow-y-hidden no-scrollbar pb-6 sm:pb-12">
         <div className="min-w-[850px] h-[165px]">
           <Skeleton className="w-full h-full rounded-md" />

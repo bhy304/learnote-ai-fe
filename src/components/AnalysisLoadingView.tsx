@@ -26,7 +26,7 @@ export default function AnalysisLoadingView() {
       <div className="text-center space-y-2">
         <h3 className="text-lg font-semibold tracking-tight">AI가 노트를 분석하고 있어요... 🤖</h3>
         <p className="text-sm text-muted-foreground animate-pulse">
-          잠시만 기다려주세요 (약 5-10초)
+          잠시만 기다려주세요.
         </p>
       </div>
 
