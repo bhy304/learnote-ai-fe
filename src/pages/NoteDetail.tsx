@@ -140,18 +140,98 @@ export default function NoteDetail() {
 
   if (isLoading) {
     return (
-      <main className="container mx-auto py-10 px-4 max-w-[800px] space-y-8">
-        <div className="flex justify-between items-center">
-          <Skeleton className="h-10 w-32" />
-          <div className="flex gap-2">
-            <Skeleton className="h-9 w-20" />
-            <Skeleton className="h-9 w-20" />
+      <div className="relative min-h-screen bg-white">
+        <main className="container mx-auto py-12 px-6 max-w-[1000px] space-y-12">
+          {/* Header Skeleton */}
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-10 w-24" />
+            <div className="flex gap-3">
+              <Skeleton className="h-10 w-24" />
+              <Skeleton className="h-10 w-24" />
+              <Skeleton className="h-10 w-24" />
+            </div>
           </div>
-        </div>
-        <Skeleton className="h-12 w-3/4" />
-        <Skeleton className="h-64 w-full" />
-        <Skeleton className="h-32 w-full" />
-      </main>
+
+          {/* Title Skeleton */}
+          <div className="space-y-4">
+            <Skeleton className="h-12 w-3/4" />
+          </div>
+
+          <div className="space-y-20">
+            <div className="space-y-16">
+              {/* 1. 핵심 요약 Skeleton */}
+              <section className="space-y-6">
+                <div className="flex items-center gap-2.5">
+                  <Skeleton className="size-8 rounded-lg" />
+                  <Skeleton className="h-7 w-24" />
+                </div>
+                <Skeleton className="h-8 w-full" />
+              </section>
+
+              {/* 2. 학습 키워드 Skeleton */}
+              <section className="space-y-6">
+                <div className="flex items-center gap-2.5">
+                  <Skeleton className="size-8 rounded-lg" />
+                  <Skeleton className="h-7 w-24" />
+                </div>
+                <div className="flex gap-2">
+                  <Skeleton className="h-8 w-20 rounded-full" />
+                  <Skeleton className="h-8 w-24 rounded-full" />
+                  <Skeleton className="h-8 w-16 rounded-full" />
+                </div>
+              </section>
+
+              {/* 3. 팩트 체크 Skeleton */}
+              <section className="space-y-8">
+                <div className="flex items-center gap-2.5">
+                  <Skeleton className="size-8 rounded-lg" />
+                  <Skeleton className="h-7 w-24" />
+                </div>
+                <div className="space-y-6">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="pl-6 border-l-2 border-slate-100 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="h-5 w-16" />
+                        <Skeleton className="h-6 w-1/2" />
+                      </div>
+                      <Skeleton className="h-20 w-full rounded-xl" />
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* 4. 다음 학습 추천 Skeleton */}
+              <section className="space-y-8">
+                <div className="flex items-center gap-2.5">
+                  <Skeleton className="size-8 rounded-lg" />
+                  <Skeleton className="h-7 w-32" />
+                </div>
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="p-6 rounded-xl border border-slate-100 flex gap-4">
+                      <Skeleton className="size-6 rounded-full shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-4 w-full" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* 6. 나의 학습 노트 Skeleton */}
+              <section className="space-y-6">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="size-8 rounded-lg" />
+                  <Skeleton className="h-7 w-32" />
+                </div>
+                <Skeleton className="h-32 w-full rounded-3xl" />
+                <Skeleton className="h-[400px] w-full rounded-xl" />
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
     );
   }
 
@@ -416,77 +496,82 @@ export default function NoteDetail() {
                       )}
                     </div>
                     <div className="space-y-4">
-                      {suggestedTodos.map((todoItem: any, i: number) => {
-                        const todo =
-                          typeof todoItem === 'string' ? { content: todoItem } : todoItem;
-                        const isCreated = todo.isCreated || false;
+                      {suggestedTodos.map(
+                        (
+                          todoItem: NoteAnalysisResponseDtoSuggestedTodosItem | string,
+                          i: number,
+                        ) => {
+                          const todo =
+                            typeof todoItem === 'string' ? { content: todoItem } : todoItem;
+                          const isCreated = todo.isCreated || false;
 
-                        return (
-                          <div
-                            key={i}
-                            onClick={() => !isCreated && isSelectionMode && toggleSelect(i)}
-                            className={cn(
-                              'flex items-start gap-4 p-6 rounded-xl transition-all duration-300 group border relative overflow-hidden',
-                              isCreated
-                                ? 'bg-slate-50 border-slate-100 opacity-80'
-                                : isSelectionMode
-                                  ? selectedIndices.has(i)
-                                    ? 'border-primary bg-primary/5 shadow-md ring-1 ring-primary/20 cursor-pointer'
-                                    : 'bg-white border-slate-100 hover:border-slate-200 cursor-pointer'
-                                  : 'bg-white border-slate-100 shadow-sm hover:shadow-md ',
-                            )}
-                          >
-                            {isCreated && (
-                              <div className="absolute top-4 right-4 bg-emerald-100 text-emerald-600 text-sm font-bold px-3 py-1 rounded-full z-10 flex items-center gap-1 shadow-sm">
-                                <CheckCircle2 className="size-3" />
-                                추가됨
-                              </div>
-                            )}
-
-                            {isSelectionMode ? (
-                              <div
-                                className="pt-1 cursor-pointer"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <Checkbox
-                                  checked={selectedIndices.has(i)}
-                                  onCheckedChange={() => toggleSelect(i)}
-                                  disabled={isCreated}
-                                  className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                                />
-                              </div>
-                            ) : (
-                              <div
-                                className={cn(
-                                  'shrink-0 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs mt-0.5 transition-colors',
-                                  isCreated
-                                    ? 'bg-emerald-500 text-white'
-                                    : 'bg-slate-900 text-white',
-                                )}
-                              >
-                                {isCreated ? <CheckCircle2 className="size-3.5" /> : i + 1}
-                              </div>
-                            )}
-                            <div className={cn('flex flex-col gap-1.5', isCreated && 'pr-16')}>
-                              <h4
-                                className={cn(
-                                  'text-base font-bold transition-colors',
-                                  isCreated
-                                    ? 'text-slate-500 line-through'
-                                    : 'text-slate-800 group-hover:text-primary',
-                                )}
-                              >
-                                {todo.content}
-                              </h4>
-                              {todo.reason && (
-                                <p className="text-base text-slate-500 font-normal leading-relaxed">
-                                  {todo.reason}
-                                </p>
+                          return (
+                            <div
+                              key={i}
+                              onClick={() => !isCreated && isSelectionMode && toggleSelect(i)}
+                              className={cn(
+                                'flex items-start gap-4 p-6 rounded-xl transition-all duration-300 group border relative overflow-hidden',
+                                isCreated
+                                  ? 'bg-slate-50 border-slate-100 opacity-80'
+                                  : isSelectionMode
+                                    ? selectedIndices.has(i)
+                                      ? 'border-primary bg-primary/5 shadow-md ring-1 ring-primary/20 cursor-pointer'
+                                      : 'bg-white border-slate-100 hover:border-slate-200 cursor-pointer'
+                                    : 'bg-white border-slate-100 shadow-sm hover:shadow-md ',
                               )}
+                            >
+                              {isCreated && (
+                                <div className="absolute top-4 right-4 bg-emerald-100 text-emerald-600 text-sm font-bold px-3 py-1 rounded-full z-10 flex items-center gap-1 shadow-sm">
+                                  <CheckCircle2 className="size-3" />
+                                  추가됨
+                                </div>
+                              )}
+
+                              {isSelectionMode ? (
+                                <div
+                                  className="pt-1 cursor-pointer"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <Checkbox
+                                    checked={selectedIndices.has(i)}
+                                    onCheckedChange={() => toggleSelect(i)}
+                                    disabled={isCreated}
+                                    className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                                  />
+                                </div>
+                              ) : (
+                                <div
+                                  className={cn(
+                                    'shrink-0 w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs mt-0.5 transition-colors',
+                                    isCreated
+                                      ? 'bg-emerald-500 text-white'
+                                      : 'bg-slate-900 text-white',
+                                  )}
+                                >
+                                  {isCreated ? <CheckCircle2 className="size-3.5" /> : i + 1}
+                                </div>
+                              )}
+                              <div className={cn('flex flex-col gap-1.5', isCreated && 'pr-16')}>
+                                <h4
+                                  className={cn(
+                                    'text-base font-bold transition-colors',
+                                    isCreated
+                                      ? 'text-slate-500 line-through'
+                                      : 'text-slate-800 group-hover:text-primary',
+                                  )}
+                                >
+                                  {todo.content}
+                                </h4>
+                                {todo.reason && (
+                                  <p className="text-base text-slate-500 font-normal leading-relaxed">
+                                    {todo.reason}
+                                  </p>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        },
+                      )}
                     </div>
                   </section>
                 )}
