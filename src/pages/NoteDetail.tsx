@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNote } from '@/hooks/useNote';
@@ -49,9 +49,13 @@ interface NoteSummary {
 export default function NoteDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
   const { data: note, isLoading } = useNote(id || null);
+  const isFromCreate = location.state?.fromCreate;
+  const isAnalyzing = note?.status === 'ANALYZING';
+
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedIndices, setSelectedIndices] = useState<Set<number>>(new Set());
   const [isEditing, setIsEditing] = useState(false);
@@ -155,6 +159,9 @@ export default function NoteDetail() {
   };
 
   if (isLoading) {
+    if (isFromCreate) {
+      return <AnalysisLoadingView />;
+    }
     return (
       <div className="relative min-h-screen bg-white">
         <main className="container mx-auto py-12 px-6 max-w-[1000px] space-y-12">
@@ -251,6 +258,10 @@ export default function NoteDetail() {
     );
   }
 
+  if (isAnalyzing) {
+    return <AnalysisLoadingView />;
+  }
+
   if (!note) {
     return (
       <main className="container mx-auto py-20 px-4 text-center">
@@ -262,7 +273,6 @@ export default function NoteDetail() {
     );
   }
 
-  const isAnalyzing = note.status === 'ANALYZING';
   const summaryData = note.summary as NoteSummary;
   const summary = summaryData?.oneLineSummary || '요약 정보가 없습니다.';
   const keywords = summaryData?.keywords || [];
@@ -278,17 +288,7 @@ export default function NoteDetail() {
 
   return (
     <div className="relative min-h-screen bg-white">
-      {isAnalyzing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-md animate-in fade-in duration-500">
-          <AnalysisLoadingView />
-        </div>
-      )}
-      <main
-        className={cn(
-          'container mx-auto py-12 px-6 max-w-[1000px] space-y-12 transition-all duration-700',
-          isAnalyzing ? 'blur-[2px] opacity-60' : 'animate-in fade-in',
-        )}
-      >
+      <main className="container mx-auto py-12 px-6 max-w-[1000px] space-y-12 animate-in fade-in">
         <div className="flex items-center justify-between">
           <Button
             variant="ghost"

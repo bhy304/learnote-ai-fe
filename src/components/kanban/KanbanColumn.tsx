@@ -48,7 +48,7 @@ export function KanbanColumn({ id, title, todos, onToggleStatus }: KanbanColumnP
   return (
     <div
       className={cn(
-        'flex flex-col flex-1 min-w-[300px] rounded-2xl border p-4 transition-colors',
+        'flex flex-col flex-1 w-full md:min-w-[300px] min-h-[400px] rounded-2xl border p-4 transition-colors',
         styles.container,
       )}
     >

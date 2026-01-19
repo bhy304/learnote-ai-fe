@@ -58,7 +58,7 @@ export default function Overview() {
         {isNotesLoading ? (
           <TableSkeleton />
         ) : (
-          <div className="overflow-hidden">
+          <div className="overflow-x-auto">
             <DataTable
               columns={columns}
               data={notes?.items || []}

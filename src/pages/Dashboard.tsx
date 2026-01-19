@@ -27,12 +27,12 @@ export default function Dashboard() {
       <div className="flex h-screen w-full overflow-hidden bg-white">
         <DashboardSidebar activeView={activeView} onToggleView={handleToggleView} />
         <main className="flex-1 h-screen overflow-hidden bg-white transition-all flex flex-col">
-          <div
-            className={cn(
-              'container mx-auto px-8 max-w-[1280px] h-full flex flex-col pt-16 pb-16 animate-in fade-in duration-700',
-            )}
-          >
-            <div className="flex-1 no-scrollbar">
+          <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar">
+            <div
+              className={cn(
+                'container mx-auto px-4 md:px-8 max-w-[1280px] min-h-full flex flex-col pt-8 md:pt-16 pb-16 animate-in fade-in duration-700',
+              )}
+            >
               {activeView === 'dashboard' ? (
                 isFirstTimeUser ? (
                   <div className="min-h-[calc(100vh-128px)] flex flex-col justify-center">

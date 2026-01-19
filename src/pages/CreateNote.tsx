@@ -37,7 +37,7 @@ export default function CreateNote() {
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       queryClient.invalidateQueries({ queryKey: ['notes'] });
 
-      navigate(`/notes/${result.noteId}`);
+      navigate(`/notes/${result.noteId}`, { state: { fromCreate: true } });
     } catch (error) {
       console.error(error);
       setIsSubmitting(false);

@@ -9,7 +9,7 @@ export const columns: ColumnDef<NoteListItemDto>[] = [
     header: () => <div className="text-center">작성일</div>,
     cell: ({ row }) => <div className="text-center">{row.getValue('createdAt')}</div>,
     meta: {
-      className: 'w-[200px]',
+      className: 'w-[120px]',
     } as any,
   },
   {
@@ -19,8 +19,11 @@ export const columns: ColumnDef<NoteListItemDto>[] = [
       const noteId = row.original.id;
 
       return (
-        <div className="w-full text-left">
-          <Link to={`/notes/${noteId}`} className="font-medium hover:underline cursor-pointer">
+        <div className="w-full text-left min-w-[200px]">
+          <Link
+            to={`/notes/${noteId}`}
+            className="font-medium hover:underline cursor-pointer line-clamp-1"
+          >
             {row.getValue('title')}
           </Link>
         </div>
@@ -36,7 +39,7 @@ export const columns: ColumnDef<NoteListItemDto>[] = [
       </div>
     ),
     meta: {
-      className: 'w-[200px]',
+      className: 'w-[80px]',
     } as any,
   },
 ];

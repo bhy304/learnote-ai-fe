@@ -61,7 +61,7 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="overflow-hidden rounded-lg border">
-        <Table className="table-fixed w-full">
+        <Table className="w-full">
           <TableHeader className="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors bg-muted/50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="bg-muted/50 ">

@@ -136,7 +136,7 @@ export function KanbanBoard({ initialTodos }: KanbanBoardProps) {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex gap-6 h-full min-h-[400px]">
+      <div className="flex flex-col md:flex-row gap-6 h-full min-h-[500px]">
         <KanbanColumn
           id="PENDING"
           title="Pending"
