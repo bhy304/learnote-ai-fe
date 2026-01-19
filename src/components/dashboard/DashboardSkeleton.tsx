@@ -143,3 +143,20 @@ export function KanbanSkeleton() {
     </div>
   );
 }
+
+export function DashboardMainLoading() {
+  return (
+    <div className="space-y-8 animate-pulse pt-4">
+      <div className="space-y-2">
+        <Skeleton className="h-9 w-48" />
+        <Skeleton className="h-5 w-80" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-32 rounded-2xl border border-slate-100 bg-slate-50/50" />
+        ))}
+      </div>
+      <div className="h-40 rounded-2xl border border-slate-100 bg-slate-50/50" />
+    </div>
+  );
+}

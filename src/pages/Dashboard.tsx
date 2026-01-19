@@ -17,36 +17,40 @@ export default function Dashboard() {
   };
 
   const user = useAuthStore((state) => state.user);
+  const initialHasNotes = useAuthStore((state) => state.hasNotes);
 
   const { data: dashboardData, isLoading } = useDashboard();
 
+  const isInitialLoading = isLoading && !dashboardData;
   const isFirstTimeUser = !isLoading && dashboardData?.totalNotes === 0;
+
+  // 대시보드(Overview)를 보여줘야 하는 조건:
+  // 1. 초기 로딩 중이면서 기존에 노트가 있었던 경우 (스켈레톤 노출)
+  // 2. 로딩이 완료되었고 실제로 노트 데이터가 있는 경우
+  const shouldShowOverview =
+    (isInitialLoading && initialHasNotes) || (!isLoading && !!dashboardData && !isFirstTimeUser);
 
   return (
     <SidebarProvider defaultOpen={true} className="h-full">
       <div className="flex h-full w-full overflow-hidden bg-white">
         <DashboardSidebar activeView={activeView} onToggleView={handleToggleView} />
         <main className="flex-1 h-full overflow-hidden bg-white transition-all flex flex-col relative">
-          <div className="flex-1 overflow-y-auto overflow-x-hidden">
-            <div
-              className={cn(
-                'container mx-auto px-4 md:px-8 max-w-[1280px] flex flex-col pt-16 pb-8 animate-in fade-in duration-700',
-              )}
-            >
-              {activeView === 'dashboard' ? (
-                isFirstTimeUser ? (
-                  <div className="min-h-[calc(100vh-128px)] flex flex-col justify-center">
-                    <EmptyDashboard userName={user?.name || ''} />
-                  </div>
-                ) : (
-                  <div className="space-y-4 md:space-y-6">
-                    <Overview />
-                  </div>
-                )
+          <div
+            className={cn(
+              'container mx-auto px-4 md:px-8 max-w-[1280px] flex flex-col pt-16 pb-8 animate-in fade-in duration-700',
+            )}
+          >
+            {activeView === 'dashboard' ? (
+              isFirstTimeUser ? (
+                <div className="min-h-[calc(100vh-128px)] flex flex-col justify-center">
+                  <EmptyDashboard userName={user?.name || ''} />
+                </div>
               ) : (
-                <TodoView />
-              )}
-            </div>
+                <div className="space-y-4 md:space-y-6">{shouldShowOverview && <Overview />}</div>
+              )
+            ) : (
+              <TodoView />
+            )}
           </div>
         </main>
       </div>
