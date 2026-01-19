@@ -19,9 +19,10 @@ import {
   Pagination,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
+  PaginationFirst,
+  PaginationLast,
 } from '@/components/ui/pagination';
 import { cn } from '@/lib/utils';
 
@@ -112,37 +113,49 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                className={pageIndex === 0 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                onClick={() => onPageChange(pageIndex)}
-              />
-            </PaginationItem>
-            {Array.from({ length: pageCount }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  className="cursor-pointer"
-                  isActive={pageIndex + 1 === page}
-                  onClick={() => onPageChange(page)}
-                >
-                  {page}
-                </PaginationLink>
+      {pageCount > 1 && (
+        <div className="flex items-center justify-center py-6 px-2 gap-8">
+          {/* 페이지 정보 */}
+          <div className="text-sm font-medium text-slate-500 whitespace-nowrap">
+            Page <span className="text-slate-900">{pageIndex + 1}</span> of{' '}
+            <span className="text-slate-900">{pageCount}</span>
+          </div>
+
+          {/* 네비게이션 버튼 그룹 */}
+          <Pagination className="w-auto mx-0">
+            <PaginationContent className="gap-1">
+              <PaginationItem>
+                <PaginationFirst
+                  className={pageIndex === 0 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  onClick={() => onPageChange(1)}
+                />
               </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                className={
-                  pageIndex + 1 >= pageCount ? 'pointer-events-none opacity-50' : 'cursor-pointer'
-                }
-                onClick={() => onPageChange(pageIndex + 2)}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+              <PaginationItem>
+                <PaginationPrevious
+                  className={pageIndex === 0 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
+                  onClick={() => onPageChange(pageIndex)}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationNext
+                  className={
+                    pageIndex + 1 >= pageCount ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                  }
+                  onClick={() => onPageChange(pageIndex + 2)}
+                />
+              </PaginationItem>
+              <PaginationItem>
+                <PaginationLast
+                  className={
+                    pageIndex + 1 >= pageCount ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+                  }
+                  onClick={() => onPageChange(pageCount)}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
     </div>
   );
 }

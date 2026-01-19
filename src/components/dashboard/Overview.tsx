@@ -28,7 +28,7 @@ export default function Overview() {
 
   if (isDashboardLoading) {
     return (
-      <div className="space-y-8 md:space-y-10">
+      <div className="space-y-4 md:space-y-6">
         <StatsSkeleton />
         <HeatmapSkeleton />
         <section className="space-y-6">
@@ -45,7 +45,7 @@ export default function Overview() {
   if (!dashboardData) return null;
 
   return (
-    <>
+    <div className="space-y-4 md:space-y-6">
       <DashboardStats dashboardData={dashboardData} />
       <Heatmap dashboardData={dashboardData} />
       <section className="space-y-6">
@@ -73,6 +73,6 @@ export default function Overview() {
           </div>
         )}
       </section>
-    </>
+    </div>
   );
 }

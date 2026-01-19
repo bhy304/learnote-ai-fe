@@ -13,8 +13,8 @@ export function StatsSkeleton() {
             <Skeleton className="h-4 w-4 sm:h-5 sm:w-5 rounded-full" />
           </div>
           <div className="flex items-baseline space-x-1">
-            <Skeleton className="h-8 w-12 sm:h-10 sm:w-16" />
-            <Skeleton className="h-4 w-6 sm:h-6 sm:w-8" />
+            <Skeleton className="h-8 w-24 sm:h-10 sm:w-32" />
+            <Skeleton className="h-4 w-10 sm:h-6 sm:w-12" />
           </div>
         </div>
       ))}
@@ -24,7 +24,7 @@ export function StatsSkeleton() {
 
 export function HeatmapSkeleton() {
   return (
-    <div className="w-full bg-white rounded-xl border border-slate-200 p-4 pb-12">
+    <div className="w-full bg-white rounded-xl border border-slate-200 p-4 pb-6 sm:pb-12">
       <div className="flex justify-between items-center mb-6">
         <Skeleton className="h-4 w-24" />
         <Skeleton className="h-4 w-40" />
@@ -37,23 +37,22 @@ export function HeatmapSkeleton() {
 export function TableSkeleton() {
   return (
     <section className="space-y-4">
-      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-        <div className="border-b border-slate-100 p-4 bg-slate-50/30">
+      <div className="bg-white rounded-lg border border-slate-200 overflow-hidden shadow-sm">
+        <div className="border-b border-slate-200 p-2 bg-slate-50/50">
           <div className="flex gap-4">
-            <Skeleton className="h-4 w-[120px]" />
-            <Skeleton className="h-4 flex-1" />
-            <Skeleton className="h-4 w-[40px] ml-auto" />
+            <Skeleton className="h-10 w-[120px]" />
+            <Skeleton className="h-10 flex-1" />
+            <Skeleton className="h-10 w-[80px]" />
           </div>
         </div>
-        <div className="p-4 space-y-4">
+        <div className="divide-y divide-slate-100">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div
-              key={i}
-              className="flex gap-4 items-center py-3 border-b border-slate-50 last:border-0"
-            >
-              <Skeleton className="h-5 w-[120px]" />
-              <Skeleton className="h-5 flex-1" />
-              <Skeleton className="h-6 w-6 rounded-full ml-auto" />
+            <div key={i} className="flex gap-4 items-center p-2">
+              <Skeleton className="h-10 w-[120px]" />
+              <Skeleton className="h-10 flex-1" />
+              <div className="flex justify-end w-[80px]">
+                <Skeleton className="h-8 w-8 rounded-full" />
+              </div>
             </div>
           ))}
         </div>
@@ -64,9 +63,9 @@ export function TableSkeleton() {
 
 export function KanbanSkeleton() {
   return (
-    <div className="flex gap-6 h-full min-h-[500px] pb-8">
+    <div className="flex flex-col md:flex-row gap-6 h-full min-h-[500px] animate-in fade-in duration-500">
       {/* Pending Column Skeleton */}
-      <div className="flex flex-col flex-1 min-w-[300px] rounded-2xl border border-blue-100/50 bg-blue-50/30 p-4 space-y-6">
+      <div className="flex flex-col flex-1 w-full md:min-w-[300px] rounded-2xl border border-blue-100/50 bg-blue-50/30 p-4 space-y-6">
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-2">
             <div className="size-1.5 rounded-full bg-blue-500" />
@@ -75,15 +74,15 @@ export function KanbanSkeleton() {
           </div>
         </div>
         <div className="space-y-3 p-2">
-          {[1, 2].map((i) => (
+          {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex gap-3 items-center"
+              className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-3 items-center"
             >
-              <Skeleton className="size-4 rounded" />
+              <Skeleton className="size-5 rounded" />
               <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-3 w-1/2" />
+                <Skeleton className="h-5 w-3/4" />
+                <Skeleton className="h-3.5 w-1/2" />
               </div>
             </div>
           ))}
@@ -91,7 +90,7 @@ export function KanbanSkeleton() {
       </div>
 
       {/* Completed Column Skeleton */}
-      <div className="flex flex-col flex-1 min-w-[300px] rounded-2xl border border-emerald-100/50 bg-emerald-50/30 p-4 space-y-6">
+      <div className="flex flex-col flex-1 w-full md:min-w-[300px] rounded-2xl border border-emerald-100/50 bg-emerald-50/30 p-4 space-y-6">
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-2">
             <div className="size-1.5 rounded-full bg-emerald-500" />
@@ -100,12 +99,18 @@ export function KanbanSkeleton() {
           </div>
         </div>
         <div className="space-y-3 p-2">
-          <div className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex gap-3 items-center">
-            <Skeleton className="size-4 rounded" />
-            <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-2/3" />
+          {[1, 2].map((i) => (
+            <div
+              key={i}
+              className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-3 items-center"
+            >
+              <Skeleton className="size-5 rounded" />
+              <div className="flex-1 space-y-2">
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-3.5 w-1/3 opacity-50" />
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

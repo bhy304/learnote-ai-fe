@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+  MoreHorizontalIcon,
+} from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { buttonVariants, type Button } from '@/components/ui/button';
@@ -35,7 +41,13 @@ type PaginationLinkProps = {
 } & Pick<React.ComponentProps<typeof Button>, 'size'> &
   React.ComponentProps<'a'>;
 
-function PaginationLink({ className, isActive, size = 'icon', ...props }: PaginationLinkProps) {
+function PaginationLink({
+  className,
+  isActive,
+  size = 'icon',
+  variant,
+  ...props
+}: PaginationLinkProps & { variant?: 'outline' | 'ghost' }) {
   return (
     <a
       aria-current={isActive ? 'page' : undefined}
@@ -43,7 +55,7 @@ function PaginationLink({ className, isActive, size = 'icon', ...props }: Pagina
       data-active={isActive}
       className={cn(
         buttonVariants({
-          variant: isActive ? 'outline' : 'ghost',
+          variant: variant || (isActive ? 'outline' : 'ghost'),
           size,
         }),
         className,
@@ -57,12 +69,12 @@ function PaginationPrevious({ className, ...props }: React.ComponentProps<typeof
   return (
     <PaginationLink
       aria-label="Go to previous page"
-      size="default"
-      className={cn('gap-1 px-2.5 sm:pl-2.5', className)}
+      size="icon"
+      variant="outline"
+      className={cn('size-9 bg-white shadow-sm hover:bg-slate-50', className)}
       {...props}
     >
-      <ChevronLeftIcon />
-      <span className="sr-only">Previous</span>
+      <ChevronLeftIcon className="size-4" />
     </PaginationLink>
   );
 }
@@ -71,12 +83,40 @@ function PaginationNext({ className, ...props }: React.ComponentProps<typeof Pag
   return (
     <PaginationLink
       aria-label="Go to next page"
-      size="default"
-      className={cn('gap-1 px-2.5 sm:pr-2.5', className)}
+      size="icon"
+      variant="outline"
+      className={cn('size-9 bg-white shadow-sm hover:bg-slate-50', className)}
       {...props}
     >
-      <span className="sr-only">Next</span>
-      <ChevronRightIcon />
+      <ChevronRightIcon className="size-4" />
+    </PaginationLink>
+  );
+}
+
+function PaginationFirst({ className, ...props }: React.ComponentProps<typeof PaginationLink>) {
+  return (
+    <PaginationLink
+      aria-label="Go to first page"
+      size="icon"
+      variant="outline"
+      className={cn('size-9 bg-white shadow-sm hover:bg-slate-50', className)}
+      {...props}
+    >
+      <ChevronsLeftIcon className="size-4" />
+    </PaginationLink>
+  );
+}
+
+function PaginationLast({ className, ...props }: React.ComponentProps<typeof PaginationLink>) {
+  return (
+    <PaginationLink
+      aria-label="Go to last page"
+      size="icon"
+      variant="outline"
+      className={cn('size-9 bg-white shadow-sm hover:bg-slate-50', className)}
+      {...props}
+    >
+      <ChevronsRightIcon className="size-4" />
     </PaginationLink>
   );
 }
@@ -100,7 +140,9 @@ export {
   PaginationContent,
   PaginationLink,
   PaginationItem,
+  PaginationFirst,
   PaginationPrevious,
   PaginationNext,
+  PaginationLast,
   PaginationEllipsis,
 };
